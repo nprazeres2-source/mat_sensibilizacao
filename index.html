@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material de Sensibilização — Registo</title>
+<style>
+:root{
+  --bg:#f3f6f7;--card:#fff;--ink:#16303a;--muted:#5f7680;--line:#dbe4e8;
+  --pri:#0e6e7e;--pri2:#0a5563;--pri-soft:#e1f1f3;
+  --ok:#1f8a4c;--ok-soft:#e3f4ea;--warn:#b7791f;--warn-soft:#fdf3e1;--bad:#c0392b;--bad-soft:#fbe6e3;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+header{background:var(--pri);color:#fff;padding:14px 20px 0;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+header h1{margin:0;font-size:19px;font-weight:650;letter-spacing:.2px}
+header .sub{font-size:12.5px;opacity:.8;margin-top:2px}
+nav{display:flex;gap:4px;margin-top:12px;overflow-x:auto}
+nav button{background:none;border:0;color:#d5eef2;padding:10px 14px;border-radius:8px 8px 0 0;cursor:pointer;font-weight:550;white-space:nowrap}
+nav button.on{background:var(--bg);color:var(--pri2)}
+main{max-width:1280px;margin:0 auto;padding:18px 16px 90px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sp{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.kpi b{display:block;font-size:26px;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--muted);font-size:13px}
+.kpi.bad b{color:var(--bad)} .kpi.warn b{color:var(--warn)}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:8px;padding:9px 14px;cursor:pointer;font-weight:550;min-height:40px}
+.btn:hover{background:var(--pri2)}
+.btn.sec{background:#fff;color:var(--pri2);border:1px solid var(--line)}
+.btn.sec:hover{background:var(--pri-soft)}
+.btn.danger{background:#fff;color:var(--bad);border:1px solid #f0c7c1}
+.btn.sm{padding:5px 10px;min-height:32px;font-size:13.5px}
+input,select,textarea{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;min-height:40px;width:100%}
+textarea{min-height:70px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--pri);outline-offset:-1px}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:550}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13.5px}
+.chip.on{background:var(--pri);border-color:var(--pri);color:#fff}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;background:#f8fafb}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.click{cursor:pointer} tr.click:hover td{background:#f5fafb}
+.tw{overflow-x:auto}
+.camp-h{font-weight:650;color:var(--pri2);margin:4px 0 8px;display:flex;align-items:center;gap:8px}
+.camp-h small{color:var(--muted);font-weight:500}
+.vb{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:2px 7px;margin:2px 4px 2px 0;font-size:13px;background:var(--ok-soft);color:var(--ok);font-variant-numeric:tabular-nums}
+.vb i{font-style:normal;color:var(--muted);font-size:11.5px}
+.vb.z{background:#eef1f2;color:#8a9aa0}
+.vb.low{background:var(--warn-soft);color:var(--warn)}
+.vb.neg{background:var(--bad-soft);color:var(--bad);font-weight:650}
+.tag{display:inline-block;border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600}
+.t-entrada{background:var(--ok-soft);color:var(--ok)}
+.t-oferta{background:var(--warn-soft);color:var(--warn)}
+.t-pessoal{background:var(--pri-soft);color:var(--pri2)}
+.t-acerto{background:#ece8f6;color:#5b4a99}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+/* matriz */
+.mx{border-collapse:separate;border-spacing:0}
+.mx th,.mx td{border-bottom:1px solid var(--line);border-right:1px solid #eef2f4;padding:6px 8px;text-align:center;white-space:nowrap}
+.mx th.vert{height:150px;vertical-align:bottom;padding:6px 4px}
+.mx th.vert div{writing-mode:vertical-rl;transform:rotate(180deg);text-transform:none;font-size:12.5px;color:var(--ink);font-weight:600;max-height:145px;overflow:hidden;text-overflow:ellipsis}
+.mx th.vert small{display:block;color:var(--muted);font-weight:500}
+.mx td.nm,.mx th.nm{text-align:left;position:sticky;left:0;background:#fff;z-index:2;min-width:190px}
+.mx th.nm{background:#f8fafb}
+.mx td.c{cursor:pointer;min-width:42px;font-weight:650;color:var(--pri2)}
+.mx td.c:hover{background:var(--pri-soft)}
+.mx td.c.has{background:#eaf6f0;color:var(--ok)}
+.mx tfoot td{font-weight:650;background:#f8fafb}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(10,30,38,.45);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:30px 12px;overflow:auto}
+.ov.on{display:flex}
+.md{background:#fff;border-radius:14px;width:100%;max-width:760px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.md{position:relative}
+.md h2{margin:0 0 14px;font-size:18px;padding-right:48px}
+.xbtn{position:sticky;top:0;float:right;margin:-6px -6px 0 0;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:24px;line-height:1;cursor:pointer;z-index:5;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.xbtn:hover{background:var(--bad-soft);color:var(--bad)}
+.md .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.qgrid .q{border:1px solid var(--line);border-radius:8px;padding:8px}
+.qgrid .q label{display:flex;justify-content:space-between}
+.qgrid .q input{text-align:center;font-weight:650}
+.note{background:var(--warn-soft);color:#7a5212;border-radius:8px;padding:8px 12px;font-size:13.5px;margin-top:10px}
+.note.bad{background:var(--bad-soft);color:var(--bad)}
+.fab{position:fixed;right:22px;bottom:22px;width:58px;height:58px;border-radius:50%;background:var(--pri);color:#fff;border:0;font-size:30px;box-shadow:0 6px 18px rgba(14,110,126,.45);cursor:pointer;z-index:30}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#16303a;color:#fff;padding:10px 16px;border-radius:8px;opacity:0;transition:.25s;z-index:99;pointer-events:none}
+.toast.on{opacity:1}
+.empty{text-align:center;color:var(--muted);padding:30px}
+.hide{display:none!important}
+#print{display:none}
+#gate{position:fixed;inset:0;background:linear-gradient(160deg,#0e6e7e,#0a3d47);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+#gate .box{background:#fff;border-radius:16px;padding:26px 24px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+#gate h2{margin:0 0 4px;font-size:20px} #gate p{margin:0 0 18px;color:var(--muted);font-size:13.5px}
+#gate .err{background:var(--bad-soft);color:var(--bad);border-radius:8px;padding:8px 10px;font-size:13.5px;margin-top:10px}
+#gate .lnk{background:none;border:0;color:var(--pri2);cursor:pointer;padding:0;font-size:13.5px;text-decoration:underline}
+.user{position:absolute;right:20px;top:46px;font-size:12px;opacity:.85;display:flex;gap:8px;align-items:center}
+.user button{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px}
+@media (max-width:640px){.user{position:static;margin-top:4px}}
+.sync{position:absolute;right:20px;top:16px;font-size:12.5px;background:rgba(255,255,255,.14);border-radius:999px;padding:4px 10px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.sync i{width:9px;height:9px;border-radius:50%;background:#9fb1b8;display:inline-block}
+.sync.ok i{background:#5fe08f} .sync.wait i{background:#ffd166} .sync.err i{background:#ff6b5b}
+@media (max-width:640px){.sync{position:static;display:inline-flex;margin-top:6px}}
+.th{width:46px;height:46px;border-radius:8px;object-fit:cover;background:#eef3f5;border:1px solid var(--line);flex:none;display:inline-flex;align-items:center;justify-content:center;color:#9fb1b8;font-size:20px}
+.mcell{display:flex;gap:10px;align-items:center}
+.fotoBig{max-width:100%;max-height:300px;border-radius:10px;border:1px solid var(--line);cursor:zoom-in;display:block;margin:0 auto 14px}
+.fotoEd{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.fotoEd img{width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.fotoEd .ph{width:110px;height:110px;border-radius:10px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:120;cursor:zoom-out}
+.zoom img{max-width:95vw;max-height:92vh;border-radius:8px}
+@media (max-width:640px){header h1{font-size:17px} th,td{padding:7px 6px}}
+@media print{
+  body{background:#fff}
+  header,main,.fab,.ov,.toast{display:none!important}
+  #print{display:block;font-size:12px;color:#000}
+  #print h1{font-size:18px;margin:0 0 4px} #print h2{font-size:14px;margin:16px 0 6px}
+  #print table{border-collapse:collapse;width:100%} #print th,#print td{border:1px solid #999;padding:4px 6px;background:none;color:#000}
+  #print .sig{display:flex;gap:40px;margin-top:50px} #print .sig div{flex:1;border-top:1px solid #000;padding-top:4px;text-align:center}
+  #print .pb{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Material de Sensibilização</h1>
+  <div class="sub">Registo de stock, entregas ao pessoal e ofertas por campanha</div>
+  <div class="sync" id="sync" onclick="go('dados')" title="Estado da sincronização"><i></i><span>Só neste dispositivo</span></div>
+  <div class="user hide" id="userBox"><span id="userEmail"></span><button onclick="sair()">Sair</button></div>
+  <nav id="nav">
+    <button data-v="painel" class="on">Painel</button>
+    <button data-v="pessoal">Pessoal</button>
+    <button data-v="movimentos">Movimentos</button>
+    <button data-v="materiais">Materiais</button>
+    <button data-v="dados">Dados</button>
+  </nav>
+</header>
+
+<main>
+  <!-- PAINEL -->
+  <section id="v-painel">
+    <div class="kpis" id="kpis"></div>
+    <div class="card">
+      <div class="row" style="margin-bottom:12px">
+        <div class="chips" id="campChips"></div><div class="sp"></div>
+        <label class="row small" style="margin:0;gap:6px;color:var(--ink)"><input type="checkbox" id="soStock" style="width:auto;min-height:0"> Só com stock</label>
+        <button class="btn sec sm" onclick="printStock()">Imprimir stock</button>
+      </div>
+      <div id="stockList"></div>
+    </div>
+  </section>
+
+  <!-- PESSOAL -->
+  <section id="v-pessoal" class="hide">
+    <div class="card">
+      <div class="row" style="margin-bottom:12px">
+        <div style="min-width:220px;flex:1;max-width:320px"><input id="pSearch" placeholder="Procurar pessoa…"></div>
+        <select id="pCamp" style="width:auto"></select>
+        <label class="row small" style="margin:0;gap:6px;color:var(--ink)"><input type="checkbox" id="pInat" style="width:auto;min-height:0"> Mostrar inativos</label>
+        <div class="sp"></div>
+        <button class="btn sec sm" onclick="editPessoa()">+ Pessoa</button>
+      </div>
+      <p class="small muted" style="margin:0 0 10px">Toque numa célula para registar ou anular a entrega desse material à pessoa. Toque no nome para editar a ficha.</p>
+      <div class="tw" id="matriz"></div>
+    </div>
+  </section>
+
+  <!-- MOVIMENTOS -->
+  <section id="v-movimentos" class="hide">
+    <div class="card">
+      <div class="grid" style="margin-bottom:12px">
+        <div><label>Pesquisa</label><input id="mSearch" placeholder="Destino, responsável, obs…"></div>
+        <div><label>Tipo</label><select id="mTipo"><option value="">Todos</option><option value="entrada">Entrada de stock</option><option value="oferta">Oferta / saída</option><option value="pessoal">Entrega ao pessoal</option><option value="acerto">Acerto</option></select></div>
+        <div><label>Campanha</label><select id="mCamp"></select></div>
+        <div><label>Material</label><select id="mMat"></select></div>
+        <div><label>Ano</label><select id="mAno"></select></div>
+      </div>
+      <div class="row" style="margin-bottom:8px"><span class="small muted" id="mCount"></span><div class="sp"></div>
+        <button class="btn sec sm" onclick="exportMovCSV()">Exportar CSV</button>
+        <button class="btn sm" onclick="novoMov()">+ Novo movimento</button></div>
+      <div class="tw" id="movList"></div>
+    </div>
+  </section>
+
+  <!-- MATERIAIS -->
+  <section id="v-materiais" class="hide">
+    <div class="card">
+      <div class="row" style="margin-bottom:12px"><div style="flex:1;max-width:320px"><input id="matSearch" placeholder="Procurar material ou campanha…"></div><div class="sp"></div>
+        <button class="btn sm" onclick="editMaterial()">+ Novo material</button></div>
+      <div class="tw" id="matList"></div>
+    </div>
+  </section>
+
+  <!-- DADOS -->
+  <section id="v-dados" class="hide">
+    <div class="card">
+      <h3 style="margin-top:0">Sincronização (Firebase)</h3>
+      <p class="muted small" style="margin-top:0">Os dados ficam no projeto Firebase <b>equip-campo</b>, na coleção própria <code>matsens</code> (separada do registo de equipamento de campo). Todos os dispositivos ligados veem as mesmas alterações em tempo real e a app continua a funcionar sem rede, sincronizando quando a ligação voltar.</p>
+      <div id="fbInfo" class="small" style="margin-bottom:10px"></div>
+      <div id="fbForm">
+        <label>Configuração Firebase (firebaseConfig da app web do projeto equip-campo)</label>
+        <textarea id="fbCfg" placeholder='apiKey: "…", authDomain: "equip-campo.firebaseapp.com", projectId: "equip-campo", …' style="min-height:120px;font-family:monospace;font-size:13px"></textarea>
+        <div class="row" style="margin-top:10px"><button class="btn" onclick="fbLigar()">Ligar</button></div>
+      </div>
+      <div class="row hide" id="fbOff" style="margin-top:6px"><button class="btn sec" onclick="sair()">Terminar sessão</button><button class="btn danger" onclick="fbDesligar()">Desligar este dispositivo</button></div>
+      <p class="small muted" style="margin-bottom:0">As contas de acesso (email e palavra-passe) criam-se na consola do Firebase → Authentication → Users → Add user.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Cópia de segurança</h3>
+      <p class="muted small">Os dados ficam guardados neste dispositivo/navegador. Exporte regularmente uma cópia (JSON) e importe-a noutro equipamento para continuar o registo.</p>
+      <div class="row">
+        <button class="btn" onclick="exportJSON()">Exportar cópia (JSON)</button>
+        <button class="btn sec" onclick="document.getElementById('fImp').click()">Importar cópia (JSON)</button>
+        <input type="file" id="fImp" accept=".json,application/json" class="hide">
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Exportar para Excel</h3>
+      <div class="row">
+        <button class="btn sec" onclick="exportStockCSV()">Stock por material (CSV)</button>
+        <button class="btn sec" onclick="exportMovCSV(true)">Todos os movimentos (CSV)</button>
+        <button class="btn sec" onclick="exportMatrizCSV()">Matriz pessoal × material (CSV)</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Repor dados</h3>
+      <p class="muted small">Apaga todos os registos deste dispositivo e volta a carregar os dados importados do ficheiro Excel original (MATERIAL_SENSIBILIZACAO_CAMPANHAS.xlsx).</p>
+      <button class="btn danger" onclick="repor()">Repor dados do Excel</button>
+      <p class="small muted" id="lastSave" style="margin-bottom:0"></p>
+    </div>
+  </section>
+</main>
+
+<button class="fab" title="Novo movimento" onclick="novoMov()">+</button>
+<div class="ov" id="ov"><div class="md" id="md"></div></div>
+<div class="toast" id="toast"></div>
+<div id="gate" class="hide"><div class="box">
+  <h2>Material de Sensibilização</h2>
+  <p>Inicie sessão com a sua conta para aceder aos registos.</p>
+  <div id="gWait" class="muted small">A verificar sessão…</div>
+  <form id="gForm" class="hide" onsubmit="entrar(event)">
+    <div><label>Email</label><input type="email" id="gEmail" autocomplete="username" required></div>
+    <div style="margin-top:10px"><label>Palavra-passe</label><input type="password" id="gPass" autocomplete="current-password" required></div>
+    <button class="btn" style="width:100%;margin-top:16px" id="gBtn">Entrar</button>
+    <div style="margin-top:12px;text-align:center"><button type="button" class="lnk" onclick="recuperar()">Esqueci-me da palavra-passe</button></div>
+    <div id="gErr" class="err hide"></div>
+  </form>
+</div></div>
+<div id="print"></div>
+
+<script>
+const SEED = {"materiais":[{"id":"mat1","nome":"Canetas","campanha":"LIFE IP Azores Natura","variantes":["Único"],"dataRececao":"2025-03-07","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat2","nome":"Cadernos","campanha":"LIFE IP Azores Natura","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat3","nome":"Colete castanho claro","campanha":"LIFE IP Azores Natura","variantes":["S","M","L","XL","XXL"],"dataRececao":"2025-01-22","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat4","nome":"Garrafas","campanha":"LIFE IP Azores Natura","variantes":["Único"],"dataRececao":"","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat5","nome":"T-Shirt azul claro","campanha":"LIFE IP Azores Natura","variantes":["S","M","L","XL","XXL"],"dataRececao":"2025-01-22","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat6","nome":"T-Shirt azul escuro","campanha":"LIFE IP Azores Natura","variantes":["S","M","L","XL","XXL"],"dataRececao":"","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat7","nome":"Manual Iluminação a Bordo","campanha":"NATURA@NIGHT","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat8","nome":"Manual Iluminação Zona Costeira","campanha":"NATURA@NIGHT","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat9","nome":"Calendários","campanha":"NATURA@NIGHT","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat10","nome":"Cadernos de Atividades","campanha":"NATURA@NIGHT","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"Júlia Codina","minimo":0,"ativo":true,"obs":""},{"id":"mat11","nome":"Cadernos Pedagógicos","campanha":"NATURA@NIGHT","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"Júlia Codina","minimo":0,"ativo":true,"obs":""},{"id":"mat12","nome":"Hoodies","campanha":"NATURA@NIGHT","variantes":["S","M","L","XL","XXL"],"dataRececao":"","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat13","nome":"Cartaz SOS Aves Marinhas","campanha":"SOS Aves Marinhas","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"Júlia Codina","minimo":0,"ativo":true,"obs":""},{"id":"mat14","nome":"Pocket Guides","campanha":"NATURA@NIGHT","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"Júlia Codina","minimo":0,"ativo":true,"obs":""},{"id":"mat15","nome":"Posters","campanha":"NATURA@NIGHT","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"Júlia Codina","minimo":0,"ativo":true,"obs":""},{"id":"mat16","nome":"T-Shirt azul","campanha":"NATURA@NIGHT","variantes":["S","M","L","XL","XXL"],"dataRececao":"","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat17","nome":"T-Shirt branca","campanha":"NATURA@NIGHT","variantes":["S","M","L","XL","XXL"],"dataRececao":"","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat18","nome":"Blusão","campanha":"LIXO ZERO","variantes":["S","M","L","XL","XXL"],"dataRececao":"","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat19","nome":"T-Shirt","campanha":"LIXO ZERO","variantes":["S","M","L","XL","XXL"],"dataRececao":"","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat20","nome":"Cadernos","campanha":"MSP-OR","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"Aida Silva","minimo":0,"ativo":true,"obs":""},{"id":"mat21","nome":"Marcadores","campanha":"Oceanlit","variantes":["Único"],"dataRececao":"2025-03-07","responsavel":"","minimo":0,"ativo":true,"obs":""},{"id":"mat22","nome":"Puzzle na Costa","campanha":"PLASMAR+","variantes":["Puzzle","Cartas"],"dataRececao":"2025-03-06","responsavel":"Paulo Miranda","minimo":0,"ativo":true,"obs":""},{"id":"mat23","nome":"Sacos","campanha":"EMD 2025","variantes":["Único"],"dataRececao":"2025-01-23","responsavel":"Miriam Garcia","minimo":0,"ativo":true,"obs":""},{"id":"mat24","nome":"T-Shirt","campanha":"SOS Cagarro","variantes":["S","M","L","XL","XXL"],"dataRececao":"","responsavel":"","minimo":0,"ativo":true,"obs":""}],"pessoal":[{"id":"p1","nome":"Rui Martins","servico":"DRPM","tamanho":"","ativo":true},{"id":"p2","nome":"Aida Silva","servico":"","tamanho":"","ativo":true},{"id":"p3","nome":"Alexandre Rodrigues","servico":"","tamanho":"M","ativo":true},{"id":"p4","nome":"António Gomes","servico":"","tamanho":"M","ativo":true},{"id":"p5","nome":"Bruno Rosa","servico":"","tamanho":"","ativo":true},{"id":"p6","nome":"Carina Gomes","servico":"","tamanho":"","ativo":true},{"id":"p7","nome":"Estela Dias","servico":"","tamanho":"S","ativo":true},{"id":"p8","nome":"Fernanda Silva","servico":"","tamanho":"","ativo":true},{"id":"p9","nome":"Fernando Cardoso","servico":"DSGCM","tamanho":"","ativo":true},{"id":"p10","nome":"Fernando Decq Mota","servico":"","tamanho":"XL","ativo":true},{"id":"p11","nome":"Francisco Freitas","servico":"","tamanho":"","ativo":true},{"id":"p12","nome":"Gilberto Carreira","servico":"DSBPM","tamanho":"M","ativo":true},{"id":"p13","nome":"Helena Cepêda","servico":"","tamanho":"","ativo":true},{"id":"p14","nome":"Inês Barros","servico":"","tamanho":"","ativo":true},{"id":"p15","nome":"Isabel Carvão","servico":"","tamanho":"S","ativo":true},{"id":"p16","nome":"Joana Miodonski","servico":"","tamanho":"L","ativo":true},{"id":"p17","nome":"João Lagoa","servico":"","tamanho":"","ativo":true},{"id":"p18","nome":"Júlia Codina","servico":"","tamanho":"S","ativo":true},{"id":"p19","nome":"Laurinda Ferreira","servico":"","tamanho":"","ativo":true},{"id":"p20","nome":"Madalena Viegas","servico":"","tamanho":"","ativo":true},{"id":"p21","nome":"Marco Santos","servico":"","tamanho":"M","ativo":true},{"id":"p22","nome":"Maria Magalhães","servico":"","tamanho":"","ativo":true},{"id":"p23","nome":"Miriam Garcia","servico":"","tamanho":"","ativo":true},{"id":"p24","nome":"Nuno Prazeres","servico":"","tamanho":"XL","ativo":true},{"id":"p25","nome":"Paulo Miranda","servico":"","tamanho":"XL","ativo":true},{"id":"p26","nome":"Renata Oliveira","servico":"","tamanho":"M","ativo":true},{"id":"p27","nome":"Sandra Menino","servico":"","tamanho":"","ativo":true},{"id":"p28","nome":"Sara Vanessa Santos","servico":"","tamanho":"","ativo":true},{"id":"p29","nome":"Sofia Garcia","servico":"","tamanho":"","ativo":true},{"id":"p30","nome":"Sónia Raquel Martins","servico":"","tamanho":"S","ativo":true},{"id":"p31","nome":"Susana Simião","servico":"","tamanho":"","ativo":true},{"id":"p32","nome":"Tânia Raposo","servico":"","tamanho":"","ativo":true},{"id":"p33","nome":"Teresa Luís","servico":"","tamanho":"","ativo":true},{"id":"p34","nome":"Vladimiro Ávila","servico":"","tamanho":"L","ativo":true},{"id":"p35","nome":"Sónia Vermelhudo","servico":"","tamanho":"","ativo":true},{"id":"p36","nome":"Nuno Azevedo","servico":"","tamanho":"","ativo":true},{"id":"p37","nome":"Ana Pabon","servico":"","tamanho":"","ativo":true}],"movimentos":[{"tipo":"entrada","data":"2025-03-07","materialId":"mat1","qtd":{"Único":132},"obs":"Stock inicial (importado do Excel)","id":"m1","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p1","obs":"Importado do Excel","id":"m2","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p2","obs":"Importado do Excel","id":"m3","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p3","obs":"Importado do Excel","id":"m4","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p5","obs":"Importado do Excel","id":"m5","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m6","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m7","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m8","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p9","obs":"Importado do Excel","id":"m9","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p10","obs":"Importado do Excel","id":"m10","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p11","obs":"Importado do Excel","id":"m11","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m12","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p13","obs":"Importado do Excel","id":"m13","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p14","obs":"Importado do Excel","id":"m14","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m15","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p16","obs":"Importado do Excel","id":"m16","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p17","obs":"Importado do Excel","id":"m17","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m18","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m19","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p20","obs":"Importado do Excel","id":"m20","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p21","obs":"Importado do Excel","id":"m21","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m22","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p23","obs":"Importado do Excel","id":"m23","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m24","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p25","obs":"Importado do Excel","id":"m25","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p26","obs":"Importado do Excel","id":"m26","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p27","obs":"Importado do Excel","id":"m27","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p29","obs":"Importado do Excel","id":"m28","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p30","obs":"Importado do Excel","id":"m29","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p35","obs":"Importado do Excel","id":"m30","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat1","qtd":{"Único":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m31","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-03-28","materialId":"mat1","qtd":{"Único":2},"entreguePor":"Gilberto Carreira","destino":"28-MAR-2025 - Gilberto - 2 Oferta","obs":"Importado do Excel","id":"m32","pessoaId":""},{"tipo":"oferta","data":"2025-05-15","materialId":"mat1","qtd":{"Único":6},"entreguePor":"Sofia Garcia","destino":"15-MAI-2025 - Sofia Garcia - 6 - Inês Martins","obs":"Importado do Excel","id":"m33","pessoaId":""},{"tipo":"oferta","data":"2025-06-12","materialId":"mat1","qtd":{"Único":10},"entreguePor":"Miriam Garcia","destino":"12-JUN-2025 - Miriam Garcia - 10 - Atividade de limpeza lixo LIFE","obs":"Importado do Excel","id":"m34","pessoaId":""},{"tipo":"oferta","data":"2025-07-09","materialId":"mat1","qtd":{"Único":19},"entreguePor":"Inês Barros","destino":"09-JUL-2025 - Inês Barros - 19 - Atividade EMD 2025","obs":"Importado do Excel","id":"m35","pessoaId":""},{"tipo":"oferta","data":"2025-09-25","materialId":"mat1","qtd":{"Único":1},"entreguePor":"Maria Magalhães","destino":"2025SET25 - Maria Magalhães - 1 oferta - calibração balanças","obs":"Importado do Excel","id":"m36","pessoaId":""},{"tipo":"oferta","data":"2025-10-23","materialId":"mat1","qtd":{"Único":2},"entreguePor":"Maria Magalhães","destino":"2025OUT23 - Maria Magalhães - 2 PNI HOR","obs":"Importado do Excel","id":"m37","pessoaId":""},{"tipo":"oferta","data":"2026-02-05","materialId":"mat1","qtd":{"Único":1},"entreguePor":"Gilberto Carreira","destino":"05-FEV-2026 - 1 Gilberto 1 Reserva Secretariado","obs":"Importado do Excel","id":"m38","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat1","qtd":{"Único":1},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m39","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat2","qtd":{"Único":71},"obs":"Stock inicial (importado do Excel)","id":"m40","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p1","obs":"Importado do Excel","id":"m41","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p2","obs":"Importado do Excel","id":"m42","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p3","obs":"Importado do Excel","id":"m43","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p5","obs":"Importado do Excel","id":"m44","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m45","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m46","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m47","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p9","obs":"Importado do Excel","id":"m48","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p10","obs":"Importado do Excel","id":"m49","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p11","obs":"Importado do Excel","id":"m50","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m51","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p13","obs":"Importado do Excel","id":"m52","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p14","obs":"Importado do Excel","id":"m53","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m54","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p16","obs":"Importado do Excel","id":"m55","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p17","obs":"Importado do Excel","id":"m56","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m57","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m58","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p20","obs":"Importado do Excel","id":"m59","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p21","obs":"Importado do Excel","id":"m60","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m61","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p23","obs":"Importado do Excel","id":"m62","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p36","obs":"Importado do Excel","id":"m63","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m64","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p25","obs":"Importado do Excel","id":"m65","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p26","obs":"Importado do Excel","id":"m66","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p27","obs":"Importado do Excel","id":"m67","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p28","obs":"Importado do Excel","id":"m68","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p29","obs":"Importado do Excel","id":"m69","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p30","obs":"Importado do Excel","id":"m70","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p35","obs":"Importado do Excel","id":"m71","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p31","obs":"Importado do Excel","id":"m72","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p32","obs":"Importado do Excel","id":"m73","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m74","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat2","qtd":{"Único":1},"pessoaId":"p34","obs":"Importado do Excel","id":"m75","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-03-14","materialId":"mat2","qtd":{"Único":18},"entreguePor":"Miriam Garcia","destino":"Evento Património Natural e Áreas Protegidas dos Açores - 10, 11 e 13, 14 de MAR2025 - Miriam Garcia","obs":"Importado do Excel","id":"m76","pessoaId":""},{"tipo":"oferta","data":"2025-03-28","materialId":"mat2","qtd":{"Único":2},"entreguePor":"Gilberto Carreira","destino":"28-MAR-2025 - Gilberto -  2 Oferta","obs":"Importado do Excel","id":"m77","pessoaId":""},{"tipo":"oferta","data":"2025-05-15","materialId":"mat2","qtd":{"Único":6},"entreguePor":"Sofia Garcia","destino":"15-MAI-2025 - Sofia Garcia - 6 - Inês Martins","obs":"Importado do Excel","id":"m78","pessoaId":""},{"tipo":"oferta","data":"2026-02-05","materialId":"mat2","qtd":{"Único":1},"entreguePor":"Gilberto Carreira","destino":"5-FEV-2026 - 1- Gilberto 1 - Reserva Secretariado","obs":"Importado do Excel","id":"m79","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat2","qtd":{"Único":1},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m80","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-22","materialId":"mat3","qtd":{"S":3,"M":2,"L":3,"XL":1,"XXL":1},"obs":"Stock inicial (importado do Excel)","id":"m81","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat3","qtd":{"M":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m82","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat3","qtd":{"S":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m83","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat3","qtd":{"M":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m84","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat3","qtd":{"L":1},"pessoaId":"p23","obs":"Importado do Excel","id":"m85","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat3","qtd":{"XL":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m86","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-05-19","materialId":"mat3","qtd":{"L":1},"entreguePor":"Maria Magalhães","destino":"2025MAI19 - Maria Magalhães - 1L","obs":"Importado do Excel","id":"m87","pessoaId":""},{"tipo":"entrada","data":"2025-01-01","materialId":"mat4","qtd":{"Único":22},"obs":"Stock inicial (importado do Excel)","id":"m88","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat4","qtd":{"Único":6},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m89","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-22","materialId":"mat5","qtd":{"S":9,"M":6,"L":13,"XL":5,"XXL":6},"obs":"Stock inicial (importado do Excel)","id":"m90","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p1","obs":"Importado do Excel","id":"m91","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p2","obs":"Importado do Excel","id":"m92","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"M":1},"pessoaId":"p3","obs":"Importado do Excel","id":"m93","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"S":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m94","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"S":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m95","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"S":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m96","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p9","obs":"Importado do Excel","id":"m97","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"M":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m98","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"XXL":1},"pessoaId":"p13","obs":"Importado do Excel","id":"m99","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p14","obs":"Importado do Excel","id":"m100","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"S":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m101","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p16","obs":"Importado do Excel","id":"m102","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"XL":1},"pessoaId":"p17","obs":"Importado do Excel","id":"m103","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"S":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m104","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m105","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"XXL":1},"pessoaId":"p20","obs":"Importado do Excel","id":"m106","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"M":1},"pessoaId":"p21","obs":"Importado do Excel","id":"m107","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"S":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m108","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p23","obs":"Importado do Excel","id":"m109","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"XL":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m110","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p25","obs":"Importado do Excel","id":"m111","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"M":1},"pessoaId":"p27","obs":"Importado do Excel","id":"m112","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p28","obs":"Importado do Excel","id":"m113","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"XL":1},"pessoaId":"p29","obs":"Importado do Excel","id":"m114","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"S":1},"pessoaId":"p30","obs":"Importado do Excel","id":"m115","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"XL":1},"pessoaId":"p31","obs":"Importado do Excel","id":"m116","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"XL":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m117","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat5","qtd":{"L":1},"pessoaId":"p34","obs":"Importado do Excel","id":"m118","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-10-23","materialId":"mat5","qtd":{"L":2},"entreguePor":"Maria Magalhães","destino":"2025OUT23 - Maria Magalhães - 2L PNI PDL E HOR","obs":"Importado do Excel","id":"m119","pessoaId":""},{"tipo":"oferta","data":"2026-07-13","materialId":"mat5","qtd":{"M":1},"entreguePor":"Maria Magalhães","destino":"2026JUL-13 - Maria 1M","obs":"Importado do Excel","id":"m120","pessoaId":""},{"tipo":"entrada","data":"2025-01-01","materialId":"mat6","qtd":{"S":19,"M":40,"L":39,"XL":20,"XXL":1},"obs":"Stock inicial (importado do Excel)","id":"m121","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p1","obs":"Importado do Excel","id":"m122","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p2","obs":"Importado do Excel","id":"m123","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"S":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m124","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"M":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m125","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"S":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m126","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"S":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m127","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p9","obs":"Importado do Excel","id":"m128","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"M":1},"pessoaId":"p11","obs":"Importado do Excel","id":"m129","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"M":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m130","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"XXL":1},"pessoaId":"p13","obs":"Importado do Excel","id":"m131","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p14","obs":"Importado do Excel","id":"m132","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"S":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m133","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p16","obs":"Importado do Excel","id":"m134","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"XL":1},"pessoaId":"p17","obs":"Importado do Excel","id":"m135","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"S":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m136","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m137","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"XL":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m138","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"M":1},"pessoaId":"p21","obs":"Importado do Excel","id":"m139","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"S":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m140","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p23","obs":"Importado do Excel","id":"m141","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"XL":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m142","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p25","obs":"Importado do Excel","id":"m143","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"M":1},"pessoaId":"p27","obs":"Importado do Excel","id":"m144","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p28","obs":"Importado do Excel","id":"m145","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"XL":1},"pessoaId":"p29","obs":"Importado do Excel","id":"m146","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"S":1},"pessoaId":"p30","obs":"Importado do Excel","id":"m147","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"XL":1},"pessoaId":"p31","obs":"Importado do Excel","id":"m148","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"XL":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m149","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat6","qtd":{"L":1},"pessoaId":"p34","obs":"Importado do Excel","id":"m150","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-05-13","materialId":"mat6","qtd":{"L":10,"M":2,"XL":3,"S":1},"entreguePor":"Maria Magalhães","destino":"2025MAI13 - Maria PNI's 10 L / 2 M / 3 XL / 1 S","obs":"Importado do Excel","id":"m151","pessoaId":""},{"tipo":"oferta","data":"2025-05-15","materialId":"mat6","qtd":{"L":6},"entreguePor":"Sofia Garcia","destino":"15-MAI-2025 - Sofia Garcia - 6 L - Inês Martins","obs":"Importado do Excel","id":"m152","pessoaId":""},{"tipo":"oferta","data":"2025-10-27","materialId":"mat6","qtd":{"L":9,"M":2,"XL":2},"entreguePor":"Maria Magalhães","destino":"20251027 - Maria Magalhães - 9L - 2M - 2XL","obs":"Importado do Excel","id":"m153","pessoaId":""},{"tipo":"oferta","data":"2025-10-31","materialId":"mat6","qtd":{"XL":6},"entreguePor":"Júlia Codina","destino":"2025OUT31 - Júlia - 6XL - Operacionais PDL","obs":"Importado do Excel","id":"m154","pessoaId":""},{"tipo":"oferta","data":"2025-11-11","materialId":"mat6","qtd":{"S":6,"M":6,"L":1},"entreguePor":"Maria Magalhães","destino":"2025NOV11 - Maria Magalhães - 6S - 6M - 1L - Participantes reunião visita LIFE IP Azores Natura","obs":"Importado do Excel","id":"m155","pessoaId":""},{"tipo":"oferta","data":"2025-11-11","materialId":"mat6","qtd":{"XL":6},"entreguePor":"Maria Magalhães","destino":"2025NOV11 - Maria Magalhães - 6XL - Café Barata","obs":"Importado do Excel","id":"m156","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat6","qtd":{"S":3,"M":7,"L":2},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m157","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat7","qtd":{"Único":50},"obs":"Stock inicial (importado do Excel)","id":"m158","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"2026-07-10","materialId":"mat7","qtd":{"Único":1},"entreguePor":"Júlia Codina","destino":"2026JUL10 - Júlia Codina 1 - Lotaçor PDL","obs":"Importado do Excel","id":"m159","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat8","qtd":{"Único":97},"obs":"Stock inicial (importado do Excel)","id":"m160","entreguePor":"","destino":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat9","qtd":{"Único":60},"obs":"Stock inicial (importado do Excel)","id":"m161","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"2025-07-09","materialId":"mat9","qtd":{"Único":19},"entreguePor":"Inês Barros","destino":"09-JUL-2025 - Inês Barros - 19 - Atividade EMD 2025","obs":"Importado do Excel","id":"m162","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat9","qtd":{"Único":41},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m163","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat10","qtd":{"Único":100},"obs":"Stock inicial (importado do Excel)","id":"m164","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"2025-05-13","materialId":"mat10","qtd":{"Único":10},"entreguePor":"Júlia Codina","destino":"2025MAI13 - Júlia Codina 10-PDL","obs":"Importado do Excel","id":"m165","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat11","qtd":{"Único":100},"obs":"Stock inicial (importado do Excel)","id":"m166","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"2025-05-13","materialId":"mat11","qtd":{"Único":10},"entreguePor":"Júlia Codina","destino":"2025MAI13 - Júlia Codina 10-PDL","obs":"Importado do Excel","id":"m167","pessoaId":""},{"tipo":"entrada","data":"2025-01-01","materialId":"mat12","qtd":{"S":30,"M":34,"L":14,"XL":7},"obs":"Stock inicial (importado do Excel)","id":"m168","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"L":1},"pessoaId":"p1","obs":"Importado do Excel","id":"m169","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"M":1},"pessoaId":"p2","obs":"Importado do Excel","id":"m170","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"M":1},"pessoaId":"p3","obs":"Importado do Excel","id":"m171","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"M":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m172","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"M":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m173","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"L":1},"pessoaId":"p9","obs":"Importado do Excel","id":"m174","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"XL":1},"pessoaId":"p10","obs":"Importado do Excel","id":"m175","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"L":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m176","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"XL":1},"pessoaId":"p13","obs":"Importado do Excel","id":"m177","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"S":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m178","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"L":1},"pessoaId":"p16","obs":"Importado do Excel","id":"m179","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"XL":1},"pessoaId":"p17","obs":"Importado do Excel","id":"m180","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"S":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m181","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"L":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m182","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"L":1},"pessoaId":"p23","obs":"Importado do Excel","id":"m183","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"XL":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m184","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"XL":1},"pessoaId":"p25","obs":"Importado do Excel","id":"m185","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"L":1},"pessoaId":"p28","obs":"Importado do Excel","id":"m186","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"XL":1},"pessoaId":"p29","obs":"Importado do Excel","id":"m187","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"L":1},"pessoaId":"p31","obs":"Importado do Excel","id":"m188","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat12","qtd":{"XL":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m189","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-05-30","materialId":"mat12","qtd":{"S":10,"M":10,"L":5},"entreguePor":"Júlia Codina","destino":"2025MAI30 - Júlia Codina 8 S - SPEA + 2 S GRW\n8 M - SPEA + 2 M - GRW\n4 L - SPEA + 1 L - GRW","obs":"Importado do Excel","id":"m190","pessoaId":""},{"tipo":"oferta","data":"2025-06-12","materialId":"mat12","qtd":{"S":1},"entreguePor":"","destino":"2025JUN12 - 1 Hoodie S para voluntária","obs":"Importado do Excel","id":"m191","pessoaId":""},{"tipo":"oferta","data":"2025-07-14","materialId":"mat12","qtd":{"S":4,"M":4,"L":2},"entreguePor":"","destino":"2025JUL14 - 10 Hoodies para SPEA - 4-S|4-M|2-L","obs":"Importado do Excel","id":"m192","pessoaId":""},{"tipo":"oferta","data":"2026-07-10","materialId":"mat12","qtd":{"L":1},"entreguePor":"Júlia Codina","destino":"2026JUL10 - Júlia Codina 1L - Lotaçor PDL","obs":"Importado do Excel","id":"m193","pessoaId":""},{"tipo":"oferta","data":"2026-07-13","materialId":"mat12","qtd":{"M":1},"entreguePor":"Maria Magalhães","destino":"2026JUL13 - Maria 1M","obs":"Importado do Excel","id":"m194","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat12","qtd":{"S":1,"M":3,"L":2},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m195","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat13","qtd":{"Único":500},"obs":"Stock inicial (importado do Excel)","id":"m196","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"2026-07-10","materialId":"mat13","qtd":{"Único":1},"entreguePor":"Júlia Codina","destino":"2026JUL10 - Júlia Codina 1 - Lotaçor PDL","obs":"Importado do Excel","id":"m197","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat14","qtd":{"Único":500},"obs":"Stock inicial (importado do Excel)","id":"m198","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"2025-05-13","materialId":"mat14","qtd":{"Único":200},"entreguePor":"Júlia Codina","destino":"2025MAI13 - Júlia Codina 200-PDL","obs":"Importado do Excel","id":"m199","pessoaId":""},{"tipo":"oferta","data":"2026-07-10","materialId":"mat14","qtd":{"Único":1},"entreguePor":"Júlia Codina","destino":"2026JUL10 - Júlia Codina 1 - Lotaçor PDL","obs":"Importado do Excel","id":"m200","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat14","qtd":{"Único":2},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m201","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat15","qtd":{"Único":250},"obs":"Stock inicial (importado do Excel)","id":"m202","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"2025-05-30","materialId":"mat15","qtd":{"Único":15},"entreguePor":"Júlia Codina","destino":"2025MAI30 - Júlia Codina 15-FLW","obs":"Importado do Excel","id":"m203","pessoaId":""},{"tipo":"oferta","data":"2025-07-09","materialId":"mat15","qtd":{"Único":35},"entreguePor":"Inês Barros","destino":"2025JUL09 - Inês Barros - 35 - Atividade EMD-2025","obs":"Importado do Excel","id":"m204","pessoaId":""},{"tipo":"oferta","data":"2025-05-30","materialId":"mat15","qtd":{"Único":10},"entreguePor":"Júlia Codina","destino":"2025MAI30 - Júlia Codina 10-GRW","obs":"Importado do Excel","id":"m205","pessoaId":""},{"tipo":"oferta","data":"2025-05-30","materialId":"mat15","qtd":{"Único":16},"entreguePor":"Júlia Codina","destino":"2025MAI30 - Júlia Codina 16-TER","obs":"Importado do Excel","id":"m206","pessoaId":""},{"tipo":"oferta","data":"2025-05-30","materialId":"mat15","qtd":{"Único":6},"entreguePor":"Júlia Codina","destino":"2025MAI30 - Júlia Codina 6-PIX","obs":"Importado do Excel","id":"m207","pessoaId":""},{"tipo":"oferta","data":"2025-05-30","materialId":"mat15","qtd":{"Único":5},"entreguePor":"Júlia Codina","destino":"2025MAI30 - Júlia Codina 5-CVU","obs":"Importado do Excel","id":"m208","pessoaId":""},{"tipo":"oferta","data":"2025-05-30","materialId":"mat15","qtd":{"Único":5},"entreguePor":"Júlia Codina","destino":"2025MAI30 - Júlia Codina 5-HOR","obs":"Importado do Excel","id":"m209","pessoaId":""},{"tipo":"oferta","data":"2025-05-30","materialId":"mat15","qtd":{"Único":6},"entreguePor":"Júlia Codina","destino":"2025MAI30 - Júlia Codina 6-SMA","obs":"Importado do Excel","id":"m210","pessoaId":""},{"tipo":"oferta","data":"2025-05-30","materialId":"mat15","qtd":{"Único":23},"entreguePor":"Júlia Codina","destino":"2025MAI30 - Júlia Codina 23-PDL","obs":"Importado do Excel","id":"m211","pessoaId":""},{"tipo":"oferta","data":"2025-07-14","materialId":"mat15","qtd":{"Único":5},"entreguePor":"Júlia Codina","destino":"2025JUL14 - Júlia Codina 05-SJZ","obs":"Importado do Excel","id":"m212","pessoaId":""},{"tipo":"oferta","data":"2026-07-10","materialId":"mat15","qtd":{"Único":1},"entreguePor":"Júlia Codina","destino":"2026JUL10 - Júlia Codina 1 - Lotaçor PDL","obs":"Importado do Excel","id":"m213","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat15","qtd":{"Único":5},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m214","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-01","materialId":"mat16","qtd":{"S":48,"M":59,"L":43},"obs":"Stock inicial (importado do Excel)","id":"m215","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"M":1},"pessoaId":"p3","obs":"Importado do Excel","id":"m216","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"M":1},"pessoaId":"p37","obs":"Importado do Excel","id":"m217","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"M":1},"pessoaId":"p5","obs":"Importado do Excel","id":"m218","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"S":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m219","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"M":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m220","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"L":1},"pessoaId":"p10","obs":"Importado do Excel","id":"m221","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"M":1},"pessoaId":"p11","obs":"Importado do Excel","id":"m222","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"M":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m223","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"S":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m224","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"L":1},"pessoaId":"p16","obs":"Importado do Excel","id":"m225","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"S":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m226","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"L":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m227","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"M":1},"pessoaId":"p21","obs":"Importado do Excel","id":"m228","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"L":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m229","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"M":1},"pessoaId":"p26","obs":"Importado do Excel","id":"m230","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"S":1},"pessoaId":"p30","obs":"Importado do Excel","id":"m231","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"M":1},"pessoaId":"p35","obs":"Importado do Excel","id":"m232","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"L":1},"pessoaId":"p31","obs":"Importado do Excel","id":"m233","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat16","qtd":{"L":1},"pessoaId":"p34","obs":"Importado do Excel","id":"m234","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-06-12","materialId":"mat16","qtd":{},"entreguePor":"","destino":"2025JUN12 - 1 T-shirt para voluntária","obs":"Importado do Excel","id":"m235","pessoaId":""},{"tipo":"oferta","data":"2025-07-14","materialId":"mat16","qtd":{"S":18,"M":24,"L":18},"entreguePor":"Júlia Codina","destino":"2025JUL14 - 60 Júlia T-shirt para SPEA -18-S|24-M|18-L","obs":"Importado do Excel","id":"m236","pessoaId":""},{"tipo":"oferta","data":"2025-10-31","materialId":"mat16","qtd":{"S":4,"M":12,"L":14},"entreguePor":"Júlia Codina","destino":"2025OUT31 - Júlia 4S, 12M, 14L - PNI GRW e Brigadas","obs":"Importado do Excel","id":"m237","pessoaId":""},{"tipo":"oferta","data":"2026-04-30","materialId":"mat16","qtd":{"S":1},"entreguePor":"Fernanda Silva","destino":"2026ABR30 - Fernanda - 1 S oferta","obs":"Importado do Excel","id":"m238","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat16","qtd":{"S":15,"M":12,"L":4},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m239","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-01","materialId":"mat17","qtd":{"S":35,"M":140,"L":140,"XL":35},"obs":"Stock inicial (importado do Excel)","id":"m240","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p5","obs":"Importado do Excel","id":"m241","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"S":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m242","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"S":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m243","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"S":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m244","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p11","obs":"Importado do Excel","id":"m245","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"XL":1},"pessoaId":"p13","obs":"Importado do Excel","id":"m246","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"S":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m247","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p17","obs":"Importado do Excel","id":"m248","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"S":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m249","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"XL":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m250","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"XL":1},"pessoaId":"p20","obs":"Importado do Excel","id":"m251","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"S":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m252","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m253","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p26","obs":"Importado do Excel","id":"m254","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p27","obs":"Importado do Excel","id":"m255","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p28","obs":"Importado do Excel","id":"m256","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p29","obs":"Importado do Excel","id":"m257","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p35","obs":"Importado do Excel","id":"m258","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"L":1},"pessoaId":"p31","obs":"Importado do Excel","id":"m259","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat17","qtd":{"XL":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m260","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-05-13","materialId":"mat17","qtd":{"S":12,"M":50,"L":50,"XL":13},"entreguePor":"Júlia Codina","destino":"2025MAI13 - Júlia Codina - Pescadores PDL-S-12 / M-50 / L-50 / XL-13","obs":"Importado do Excel","id":"m261","pessoaId":""},{"tipo":"oferta","data":"2025-09-23","materialId":"mat17","qtd":{"XL":2,"M":2,"L":10},"entreguePor":"Sónia Raquel Martins","destino":"2025SET23 - Raquel Martins - SRMP - 2XL / 2M / 10L","obs":"Importado do Excel","id":"m262","pessoaId":""},{"tipo":"oferta","data":"2026-07-10","materialId":"mat17","qtd":{"L":1},"entreguePor":"Júlia Codina","destino":"2026JUL10 - Júlia Codina 1L - Lotaçor PDL","obs":"Importado do Excel","id":"m263","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat17","qtd":{"S":1,"M":10,"L":10,"XL":1},"entreguePor":"","destino":"Atlanticoline - 1S - 10M - 10L - 1XL","obs":"Importado do Excel","id":"m264","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat17","qtd":{"S":1},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m265","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-01","materialId":"mat18","qtd":{"S":1},"obs":"Stock inicial (importado do Excel)","id":"m266","entreguePor":"","destino":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-01","materialId":"mat19","qtd":{"S":29,"M":80,"L":72,"XL":37,"XXL":1},"obs":"Stock inicial (importado do Excel)","id":"m267","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p1","obs":"Importado do Excel","id":"m268","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p2","obs":"Importado do Excel","id":"m269","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"M":1},"pessoaId":"p3","obs":"Importado do Excel","id":"m270","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"S":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m271","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"S":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m272","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"S":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m273","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p9","obs":"Importado do Excel","id":"m274","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"M":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m275","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"XXL":1},"pessoaId":"p13","obs":"Importado do Excel","id":"m276","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p14","obs":"Importado do Excel","id":"m277","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"S":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m278","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p16","obs":"Importado do Excel","id":"m279","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"XL":1},"pessoaId":"p17","obs":"Importado do Excel","id":"m280","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"S":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m281","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m282","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"M":1},"pessoaId":"p21","obs":"Importado do Excel","id":"m283","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"S":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m284","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p23","obs":"Importado do Excel","id":"m285","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"XL":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m286","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p25","obs":"Importado do Excel","id":"m287","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"M":1},"pessoaId":"p27","obs":"Importado do Excel","id":"m288","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p28","obs":"Importado do Excel","id":"m289","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"XL":1},"pessoaId":"p29","obs":"Importado do Excel","id":"m290","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"S":1},"pessoaId":"p30","obs":"Importado do Excel","id":"m291","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"XL":1},"pessoaId":"p31","obs":"Importado do Excel","id":"m292","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"XL":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m293","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat19","qtd":{"L":1},"pessoaId":"p34","obs":"Importado do Excel","id":"m294","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-03-12","materialId":"mat19","qtd":{"S":17},"entreguePor":"Sofia Garcia","destino":"2025MAR12 - Sofia Garcia - 17 S para atividade em PDL","obs":"Importado do Excel","id":"m295","pessoaId":""},{"tipo":"oferta","data":"2025-03-12","materialId":"mat19","qtd":{"L":6},"entreguePor":"Sofia Garcia","destino":"2025MAR12 - Sofia Garcia - 6 L para atividade na TER","obs":"Importado do Excel","id":"m296","pessoaId":""},{"tipo":"oferta","data":"2025-03-31","materialId":"mat19","qtd":{"M":35,"XL":1},"entreguePor":"Sofia Garcia","destino":"2025MAR31 - Sofia Garcia - DRA - Atividades em PDL - 35 M e 1 XL","obs":"Importado do Excel","id":"m297","pessoaId":""},{"tipo":"oferta","data":"2025-05-10","materialId":"mat19","qtd":{"XL":1,"M":5,"S":1},"entreguePor":"Sofia Garcia","destino":"2025MAI10 - Sofia Garcia - Limpeza - 1XL - 5M - 1S","obs":"Importado do Excel","id":"m298","pessoaId":""},{"tipo":"oferta","data":"2025-08-01","materialId":"mat19","qtd":{"XL":2,"L":4,"M":6},"entreguePor":"Sofia Garcia","destino":"2025AGO01 - Sofia Garcia - 2XL - 4L-6-M","obs":"Importado do Excel","id":"m299","pessoaId":""},{"tipo":"oferta","data":"2025-08-04","materialId":"mat19","qtd":{"S":1},"entreguePor":"Sofia Garcia","destino":"2025AGO04 - Sofia Garcia - 1S - Oferta","obs":"Importado do Excel","id":"m300","pessoaId":""},{"tipo":"oferta","data":"2025-09-15","materialId":"mat19","qtd":{"XL":15,"S":3,"M":16},"entreguePor":"Sofia Garcia","destino":"2025SET15 - Sofia Garcia - 15XL - 3S - 16M (atualização de quantidades - Stock 13XL - 0S - 0L - 13M","obs":"Importado do Excel","id":"m301","pessoaId":""},{"tipo":"oferta","data":"2026-03-20","materialId":"mat19","qtd":{"M":1,"L":2,"XL":2},"entreguePor":"Sofia Garcia","destino":"2026MAR20- Sofia Garcia 1M, 2L e 2 XL - Atividade projeto Circular Ocean 21-MAR","obs":"Importado do Excel","id":"m302","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat19","qtd":{"M":1,"L":36},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m303","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat20","qtd":{"Único":60},"obs":"Stock inicial (importado do Excel)","id":"m304","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p1","obs":"Importado do Excel","id":"m305","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p2","obs":"Importado do Excel","id":"m306","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p3","obs":"Importado do Excel","id":"m307","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m308","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m309","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m310","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p9","obs":"Importado do Excel","id":"m311","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p10","obs":"Importado do Excel","id":"m312","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p11","obs":"Importado do Excel","id":"m313","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m314","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p13","obs":"Importado do Excel","id":"m315","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p14","obs":"Importado do Excel","id":"m316","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m317","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p16","obs":"Importado do Excel","id":"m318","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p17","obs":"Importado do Excel","id":"m319","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m320","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m321","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p20","obs":"Importado do Excel","id":"m322","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p21","obs":"Importado do Excel","id":"m323","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m324","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p23","obs":"Importado do Excel","id":"m325","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p36","obs":"Importado do Excel","id":"m326","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m327","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p25","obs":"Importado do Excel","id":"m328","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p27","obs":"Importado do Excel","id":"m329","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p28","obs":"Importado do Excel","id":"m330","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p29","obs":"Importado do Excel","id":"m331","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p30","obs":"Importado do Excel","id":"m332","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p31","obs":"Importado do Excel","id":"m333","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p32","obs":"Importado do Excel","id":"m334","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m335","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat20","qtd":{"Único":1},"pessoaId":"p34","obs":"Importado do Excel","id":"m336","entreguePor":"","destino":""},{"tipo":"entrada","data":"2025-03-07","materialId":"mat21","qtd":{"Único":133},"obs":"Stock inicial (importado do Excel)","id":"m337","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"2025-07-22","materialId":"mat21","qtd":{"Único":5},"entreguePor":"Nuno Prazeres","destino":"22-JUL-2025 - Nuno - 5 Stock secretariado","obs":"Importado do Excel","id":"m338","pessoaId":""},{"tipo":"oferta","data":"2025-09-17","materialId":"mat21","qtd":{"Único":15},"entreguePor":"Sofia Garcia","destino":"17-SET-2025 - Sofia Garcia - Atividade - 15 uni","obs":"Importado do Excel","id":"m339","pessoaId":""},{"tipo":"entrada","data":"2025-03-06","materialId":"mat22","qtd":{"Puzzle":80,"Cartas":15},"obs":"Stock inicial (importado do Excel)","id":"m340","entreguePor":"","destino":"","pessoaId":""},{"tipo":"oferta","data":"2025-07-03","materialId":"mat22","qtd":{"Puzzle":9},"entreguePor":"Maria Magalhães","destino":"03JUL2025 - Maria Magalhães 09 puzzles - DRD - Atividades Porto Pim","obs":"Importado do Excel","id":"m341","pessoaId":""},{"tipo":"oferta","data":"2025-07-03","materialId":"mat22","qtd":{"Puzzle":1,"Cartas":1},"entreguePor":"Nuno Prazeres","destino":"03JUL2025 - Nuno Prazeres 1 puzzle e 1 cartas EN - Biblioteca DRPM","obs":"Importado do Excel","id":"m342","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat22","qtd":{"Puzzle":15},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m343","entreguePor":"","pessoaId":""},{"tipo":"entrada","data":"2025-01-23","materialId":"mat23","qtd":{"Único":75},"obs":"Stock inicial (importado do Excel)","id":"m344","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat23","qtd":{"Único":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m345","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat23","qtd":{"Único":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m346","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat23","qtd":{"Único":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m347","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat23","qtd":{"Único":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m348","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-07-09","materialId":"mat23","qtd":{"Único":35},"entreguePor":"Inês Barros","destino":"09JUL2025 - Inês Barros - 35 - Atividade EMD2025","obs":"Importado do Excel","id":"m349","pessoaId":""},{"tipo":"entrada","data":"2025-01-01","materialId":"mat24","qtd":{"S":12,"M":20,"L":10,"XL":5,"XXL":1},"obs":"Stock inicial (importado do Excel)","id":"m350","entreguePor":"","destino":"","pessoaId":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p1","obs":"Importado do Excel","id":"m351","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p2","obs":"Importado do Excel","id":"m352","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"S":1},"pessoaId":"p6","obs":"Importado do Excel","id":"m353","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"S":1},"pessoaId":"p7","obs":"Importado do Excel","id":"m354","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"S":1},"pessoaId":"p8","obs":"Importado do Excel","id":"m355","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p9","obs":"Importado do Excel","id":"m356","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"M":1},"pessoaId":"p12","obs":"Importado do Excel","id":"m357","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"XXL":1},"pessoaId":"p13","obs":"Importado do Excel","id":"m358","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p14","obs":"Importado do Excel","id":"m359","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"S":1},"pessoaId":"p15","obs":"Importado do Excel","id":"m360","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p16","obs":"Importado do Excel","id":"m361","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"XL":1},"pessoaId":"p17","obs":"Importado do Excel","id":"m362","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"S":1},"pessoaId":"p18","obs":"Importado do Excel","id":"m363","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p19","obs":"Importado do Excel","id":"m364","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"M":1},"pessoaId":"p21","obs":"Importado do Excel","id":"m365","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"S":1},"pessoaId":"p22","obs":"Importado do Excel","id":"m366","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p23","obs":"Importado do Excel","id":"m367","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"XL":1},"pessoaId":"p24","obs":"Importado do Excel","id":"m368","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p25","obs":"Importado do Excel","id":"m369","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"M":1},"pessoaId":"p26","obs":"Importado do Excel","id":"m370","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"M":1},"pessoaId":"p27","obs":"Importado do Excel","id":"m371","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p28","obs":"Importado do Excel","id":"m372","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"XL":1},"pessoaId":"p29","obs":"Importado do Excel","id":"m373","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"S":1},"pessoaId":"p30","obs":"Importado do Excel","id":"m374","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"XL":1},"pessoaId":"p31","obs":"Importado do Excel","id":"m375","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"XL":1},"pessoaId":"p33","obs":"Importado do Excel","id":"m376","entreguePor":"","destino":""},{"tipo":"pessoal","data":"","materialId":"mat24","qtd":{"L":1},"pessoaId":"p34","obs":"Importado do Excel","id":"m377","entreguePor":"","destino":""},{"tipo":"oferta","data":"2025-09-25","materialId":"mat24","qtd":{"L":1},"entreguePor":"Maria Magalhães","destino":"2025SET25 - Maria Magalhães - 1 L  oferta - calibração balanças","obs":"Importado do Excel","id":"m378","pessoaId":""},{"tipo":"oferta","data":"2025-10-23","materialId":"mat24","qtd":{"M":9,"S":2},"entreguePor":"Maria Magalhães","destino":"2025OUT23 - Maria Magalhães - 9M e 2S PNI PDL E HOR","obs":"Importado do Excel","id":"m379","pessoaId":""},{"tipo":"oferta","data":"","materialId":"mat24","qtd":{"M":4},"destino":"Ofertas sem registo detalhado no Excel","obs":"Acerto automático para coincidir com o total de ofertas do Excel","id":"m380","entreguePor":"","pessoaId":""}]};
+const KEY = 'matsens_v1';
+const TIPOS = {entrada:'Entrada de stock', oferta:'Oferta / saída', pessoal:'Entrega ao pessoal', acerto:'Acerto'};
+const TAMANHOS = ['S','M','L','XL','XXL'];
+let DB;
+
+/* ---------- armazenamento ---------- */
+function load(){
+  try{ const s = localStorage.getItem(KEY); if(s){ DB = JSON.parse(s); return; } }catch(e){}
+  DB = JSON.parse(JSON.stringify(SEED)); DB.atualizado = new Date().toISOString(); save(true);
+}
+function save(silent){
+  DB.atualizado = new Date().toISOString();
+  try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){ alert('Não foi possível guardar os dados neste navegador (o espaço pode estar cheio — use fotografias mais pequenas ou remova algumas): '+e.message); }
+  if(!silent) toast('Guardado');
+  pushDiff();
+}
+function uid(p){ return p + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+/* ---------- utilitários ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtD = d => d ? d.split('-').reverse().join('/') : '—';
+const hoje = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+const sumQ = q => Object.values(q||{}).reduce((a,b)=>a+(+b||0),0);
+const mat = id => DB.materiais.find(m=>m.id===id);
+const pes = id => DB.pessoal.find(p=>p.id===id);
+const matNome = m => m ? m.nome + ' — ' + m.campanha : '(material apagado)';
+const thumb = m => m && m.foto ? `<img class="th" src="${m.foto}" alt="">` : `<span class="th">▢</span>`;
+function zoom(src){ const d=document.createElement('div'); d.className='zoom'; d.innerHTML=`<img src="${src}">`; d.onclick=()=>d.remove(); document.body.appendChild(d); }
+function lerFoto(file){ return new Promise((ok,ko)=>{ const r=new FileReader(); r.onerror=ko; r.onload=()=>{ const im=new Image(); im.onerror=()=>ko(new Error('Imagem inválida')); im.onload=()=>{
+  const M=700, k=Math.min(1, M/Math.max(im.width,im.height)); const c=document.createElement('canvas'); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k);
+  const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height); ok(c.toDataURL('image/jpeg',0.78)); }; im.src=r.result; }; r.readAsDataURL(file); }); }
+function toast(t){ const e=$('toast'); e.textContent=t; e.classList.add('on'); clearTimeout(e._t); e._t=setTimeout(()=>e.classList.remove('on'),1800); }
+function campanhas(){ return [...new Set(DB.materiais.map(m=>m.campanha))].sort((a,b)=>a.localeCompare(b,'pt')); }
+function qtdTxt(m, q){
+  if(!m) return sumQ(q);
+  if(m.variantes.length===1) return String(sumQ(q));
+  return m.variantes.filter(v=>q[v]).map(v=>q[v]+' '+v).join(' · ') || '0';
+}
+
+/* ---------- cálculo de stock ---------- */
+function stock(m){
+  const r = {}; m.variantes.forEach(v=> r[v]={entrada:0,pessoal:0,oferta:0,acerto:0,disp:0});
+  DB.movimentos.forEach(x=>{
+    if(x.materialId!==m.id) return;
+    for(const [v,q] of Object.entries(x.qtd||{})){
+      if(!r[v]) r[v]={entrada:0,pessoal:0,oferta:0,acerto:0,disp:0};
+      r[v][x.tipo] += +q||0;
+    }
+  });
+  for(const v in r){ const o=r[v]; o.disp = o.entrada + o.acerto - o.pessoal - o.oferta; }
+  return r;
+}
+function totDisp(m){ return Object.values(stock(m)).reduce((a,o)=>a+o.disp,0); }
+function vbClass(m, d){ if(d<0) return 'neg'; if(d===0) return 'z'; if(m.minimo && d<=m.minimo) return 'low'; return ''; }
+
+/* ---------- navegação ---------- */
+let VIEW='painel';
+$('nav').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; go(b.dataset.v); });
+function go(v){ VIEW=v; document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+  document.querySelectorAll('main>section').forEach(s=>s.classList.toggle('hide', s.id!=='v-'+v)); render(); window.scrollTo(0,0); }
+function render(){ ({painel:rPainel, pessoal:rPessoal, movimentos:rMov, materiais:rMat, dados:rDados})[VIEW](); }
+
+/* ---------- PAINEL ---------- */
+let campSel = '';
+function rPainel(){
+  const ativos = DB.materiais.filter(m=>m.ativo!==false);
+  let unid=0, neg=0, low=0;
+  ativos.forEach(m=>{ const s=stock(m); for(const v in s){ const d=s[v].disp; if(d>0) unid+=d; if(d<0) neg++; else if(m.minimo && d<=m.minimo && d>0) low++; } });
+  const ano = String(new Date().getFullYear());
+  const ofAno = DB.movimentos.filter(x=>x.tipo==='oferta' && (x.data||'').startsWith(ano)).reduce((a,x)=>a+sumQ(x.qtd),0);
+  $('kpis').innerHTML = `
+    <div class="kpi"><b>${ativos.length}</b><span>materiais em ${campanhas().length} campanhas</span></div>
+    <div class="kpi"><b>${unid.toLocaleString('pt-PT')}</b><span>unidades disponíveis</span></div>
+    <div class="kpi"><b>${ofAno.toLocaleString('pt-PT')}</b><span>unidades oferecidas em ${ano}</span></div>
+    <div class="kpi ${neg?'bad':''}"><b>${neg}</b><span>stocks negativos (a verificar)</span></div>
+    <div class="kpi ${low?'warn':''}"><b>${low}</b><span>abaixo do mínimo</span></div>`;
+  $('campChips').innerHTML = ['',...campanhas()].map(c=>`<button class="chip ${c===campSel?'on':''}" data-c="${esc(c)}">${c?esc(c):'Todas'}</button>`).join('');
+  const soS = $('soStock').checked;
+  let html='';
+  campanhas().filter(c=>!campSel||c===campSel).forEach(c=>{
+    const ms = ativos.filter(m=>m.campanha===c && (!soS || totDisp(m)>0)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+    if(!ms.length) return;
+    html += `<div class="camp-h">${esc(c)} <small>${ms.length} materiais</small></div><div class="tw"><table style="margin-bottom:18px"><thead><tr><th>Material</th><th>Disponível por variante</th><th class="n">Total</th><th class="n">Entregue pessoal</th><th class="n">Ofertas</th><th></th></tr></thead><tbody>`;
+    ms.forEach(m=>{
+      const s=stock(m); let tp=0,to=0,td=0;
+      const vb = m.variantes.map(v=>{ const o=s[v]; tp+=o.pessoal; to+=o.oferta; td+=o.disp;
+        return `<span class="vb ${vbClass(m,o.disp)}">${m.variantes.length>1?`<i>${esc(v)}</i>`:''}${o.disp}</span>`; }).join('');
+      html += `<tr class="click" data-m="${m.id}"><td><div class="mcell">${thumb(m)}<div><b>${esc(m.nome)}</b>${m.responsavel?`<div class="small muted">Resp. ${esc(m.responsavel)}</div>`:''}</div></div></td><td>${vb}</td>
+        <td class="n"><b style="color:${td<0?'var(--bad)':'inherit'}">${td}</b></td><td class="n">${tp}</td><td class="n">${to}</td>
+        <td class="n"><button class="btn sm" data-of="${m.id}">Saída</button></td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  });
+  $('stockList').innerHTML = html || '<div class="empty">Sem materiais.</div>';
+}
+$('campChips').addEventListener('click', e=>{ const b=e.target.closest('.chip'); if(!b) return; campSel=b.dataset.c; rPainel(); });
+$('soStock').addEventListener('change', rPainel);
+$('stockList').addEventListener('click', e=>{
+  const of=e.target.closest('[data-of]'); if(of){ e.stopPropagation(); novoMov({tipo:'oferta', materialId:of.dataset.of}); return; }
+  const tr=e.target.closest('tr[data-m]'); if(tr) verMaterial(tr.dataset.m);
+});
+
+/* ---------- ficha de material ---------- */
+function verMaterial(id){
+  const m=mat(id); const s=stock(m);
+  const rec = DB.movimentos.filter(x=>x.materialId===id && x.tipo==='pessoal').map(x=>({p:pes(x.pessoaId), v:Object.keys(x.qtd)[0], x}))
+    .sort((a,b)=>(a.p?.nome||'').localeCompare(b.p?.nome||'','pt'));
+  const hist = DB.movimentos.filter(x=>x.materialId===id && x.tipo!=='pessoal').sort(cmpMov);
+  const vs = Object.keys(s);
+  modal(`<h2>${esc(m.nome)} <span class="muted" style="font-weight:500">· ${esc(m.campanha)}</span></h2>
+    ${m.foto?`<img class="fotoBig" src="${m.foto}" onclick="zoom(this.src)" alt="${esc(m.nome)}">`:`<div class="small muted" style="margin-bottom:10px">Sem fotografia — use “Editar material” para adicionar.</div>`}
+    <div class="small muted" style="margin-bottom:10px">Receção: ${fmtD(m.dataRececao)}${m.responsavel?' · Responsável: '+esc(m.responsavel):''}${m.minimo?' · Mínimo: '+m.minimo:''}${m.obs?'<br>'+esc(m.obs):''}</div>
+    <div class="tw"><table><thead><tr><th>Variante</th><th class="n">Entradas</th><th class="n">Pessoal</th><th class="n">Ofertas</th><th class="n">Acertos</th><th class="n">Disponível</th></tr></thead><tbody>
+    ${vs.map(v=>{const o=s[v];return `<tr><td>${esc(v)}</td><td class="n">${o.entrada}</td><td class="n">${o.pessoal}</td><td class="n">${o.oferta}</td><td class="n">${o.acerto}</td><td class="n"><span class="vb ${vbClass(m,o.disp)}">${o.disp}</span></td></tr>`}).join('')}
+    </tbody></table></div>
+    <h3 style="font-size:15px;margin:18px 0 6px">Entregue ao pessoal (${rec.length})</h3>
+    <div class="small">${rec.length? rec.map(r=>`${esc(r.p?.nome||'?')}${m.variantes.length>1?' <b>'+esc(r.v)+'</b>':''}`).join(' · ') : '<span class="muted">Ninguém.</span>'}</div>
+    <h3 style="font-size:15px;margin:18px 0 6px">Entradas, ofertas e acertos</h3>
+    ${movTable(hist,false)}
+    <div class="foot">
+      <button class="btn danger" onclick="delMaterial('${id}')">Apagar</button><div class="sp"></div>
+      <button class="btn sec" onclick="editMaterial('${id}')">Editar material</button>
+      <button class="btn sec" onclick="novoMov({tipo:'entrada',materialId:'${id}'})">+ Entrada</button>
+      <button class="btn" onclick="novoMov({tipo:'oferta',materialId:'${id}'})">+ Saída / oferta</button>
+    </div>`);
+}
+
+/* ---------- material: editar ---------- */
+function editMaterial(id){
+  const m = id ? mat(id) : {nome:'',campanha:campSel||'',variantes:['Único'],dataRececao:hoje(),responsavel:'',minimo:0,ativo:true,obs:''};
+  const tipoV = m.variantes.length===1 && m.variantes[0]==='Único' ? 'unico' : (m.variantes.join(',')===TAMANHOS.join(',') ? 'tam' : 'outro');
+  modal(`<h2>${id?'Editar':'Novo'} material</h2>
+    <div class="grid">
+      <div><label>Nome *</label><input id="e_nome" value="${esc(m.nome)}" placeholder="ex.: T-Shirt azul"></div>
+      <div><label>Campanha / projeto *</label><input id="e_camp" list="dl_camp" value="${esc(m.campanha)}"><datalist id="dl_camp">${campanhas().map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div>
+      <div><label>Data de receção</label><input type="date" id="e_data" value="${esc(m.dataRececao)}"></div>
+      <div><label>Responsável</label><input id="e_resp" list="dl_pes" value="${esc(m.responsavel)}">${dlPessoas()}</div>
+      <div><label>Variantes</label><select id="e_tv"><option value="unico">Sem variantes (unidade)</option><option value="tam">Tamanhos S · M · L · XL · XXL</option><option value="outro">Outras (definir)</option></select></div>
+      <div id="e_vw"><label>Variantes (separadas por vírgula)</label><input id="e_var" value="${esc(m.variantes.join(', '))}"></div>
+      <div><label>Stock mínimo (alerta)</label><input type="number" min="0" id="e_min" value="${m.minimo||0}"></div>
+      <div><label>Estado</label><select id="e_at"><option value="1">Ativo</option><option value="0" ${m.ativo===false?'selected':''}>Arquivado</option></select></div>
+    </div>
+    <div style="margin-top:12px"><label>Fotografia do produto</label>
+      <div class="fotoEd"><div id="e_fprev"></div>
+        <div class="row"><button type="button" class="btn sec sm" onclick="$('e_file').click()">Escolher / tirar foto</button>
+        <button type="button" class="btn danger sm" id="e_frm" onclick="FOTO='';fotoPrev()">Remover</button></div>
+        <input type="file" id="e_file" accept="image/*" class="hide"></div></div>
+    <div style="margin-top:12px"><label>Observações</label><textarea id="e_obs">${esc(m.obs)}</textarea></div>
+    ${id?'':`<div style="margin-top:12px" class="small muted">Depois de criar, registe a entrada de stock em “+ Entrada”.</div>`}
+    <div class="foot"><button class="btn sec" onclick="${id?`verMaterial('${id}')`:'closeM()'}">Cancelar</button><button class="btn" onclick="saveMaterial('${id||''}')">Guardar</button></div>`);
+  $('e_tv').value = tipoV;
+  FOTO = m.foto||''; fotoPrev();
+  $('e_file').onchange = async e=>{ const f=e.target.files[0]; if(!f) return; try{ FOTO=await lerFoto(f); fotoPrev(); }catch(err){ alert('Não foi possível ler a imagem: '+err.message); } };
+  const upd=()=>$('e_vw').classList.toggle('hide', $('e_tv').value!=='outro'); $('e_tv').onchange=upd; upd();
+}
+let FOTO='';
+function fotoPrev(){ $('e_fprev').innerHTML = FOTO?`<img src="${FOTO}" alt="">`:'<div class="ph">Sem foto</div>'; $('e_frm').classList.toggle('hide',!FOTO); }
+function saveMaterial(id){
+  const nome=$('e_nome').value.trim(), camp=$('e_camp').value.trim();
+  if(!nome||!camp) return alert('Indique o nome e a campanha.');
+  const tv=$('e_tv').value;
+  const variantes = tv==='unico'?['Único']:tv==='tam'?TAMANHOS.slice():[...new Set($('e_var').value.split(',').map(s=>s.trim()).filter(Boolean))];
+  if(!variantes.length) return alert('Indique pelo menos uma variante.');
+  const o={nome,campanha:camp,variantes,dataRececao:$('e_data').value,responsavel:$('e_resp').value.trim(),minimo:+$('e_min').value||0,ativo:$('e_at').value==='1',obs:$('e_obs').value.trim(),foto:FOTO};
+  if(id){ const m=mat(id);
+    const usadas = new Set(DB.movimentos.filter(x=>x.materialId===id).flatMap(x=>Object.keys(x.qtd||{})));
+    const perdidas=[...usadas].filter(v=>!variantes.includes(v));
+    if(perdidas.length && !confirm('Há movimentos com as variantes '+perdidas.join(', ')+' que deixam de constar da lista. Continuam a contar no stock. Continuar?')) return;
+    Object.assign(m,o); save(); verMaterial(id);
+  } else { const n={id:uid('mat'),...o}; DB.materiais.push(n); save(); verMaterial(n.id); }
+  render();
+}
+function delMaterial(id){
+  const n=DB.movimentos.filter(x=>x.materialId===id).length;
+  if(!confirm(`Apagar este material${n?` e os seus ${n} movimentos`:''}? Esta ação não pode ser desfeita. (Em alternativa, edite e marque como “Arquivado”.)`)) return;
+  DB.materiais=DB.materiais.filter(m=>m.id!==id); DB.movimentos=DB.movimentos.filter(x=>x.materialId!==id); save(); closeM(); render();
+}
+
+/* ---------- MATERIAIS (lista) ---------- */
+function rMat(){
+  const q=$('matSearch').value.trim().toLowerCase();
+  const ms=DB.materiais.filter(m=>!q || (m.nome+' '+m.campanha).toLowerCase().includes(q))
+    .sort((a,b)=>a.campanha.localeCompare(b.campanha,'pt')||a.nome.localeCompare(b.nome,'pt'));
+  $('matList').innerHTML = ms.length? `<table><thead><tr><th></th><th>Campanha</th><th>Material</th><th>Variantes</th><th>Receção</th><th>Responsável</th><th class="n">Disponível</th><th>Estado</th></tr></thead><tbody>
+    ${ms.map(m=>`<tr class="click" data-m="${m.id}"><td style="width:56px">${thumb(m)}</td><td>${esc(m.campanha)}</td><td><b>${esc(m.nome)}</b></td><td class="small">${esc(m.variantes.join(' · '))}</td><td>${fmtD(m.dataRececao)}</td><td>${esc(m.responsavel)}</td><td class="n">${totDisp(m)}</td><td>${m.ativo===false?'<span class="tag" style="background:#eee;color:#777">Arquivado</span>':'<span class="tag t-entrada">Ativo</span>'}</td></tr>`).join('')}
+  </tbody></table>` : '<div class="empty">Nenhum material.</div>';
+}
+$('matSearch').addEventListener('input', rMat);
+$('matList').addEventListener('click', e=>{ const tr=e.target.closest('tr[data-m]'); if(tr) verMaterial(tr.dataset.m); });
+
+/* ---------- PESSOAL (matriz) ---------- */
+function dlPessoas(){ return `<datalist id="dl_pes">${DB.pessoal.filter(p=>p.ativo!==false).map(p=>`<option value="${esc(p.nome)}">`).join('')}</datalist>`; }
+function rPessoal(){
+  const sel=$('pCamp'); const cur=sel.value;
+  sel.innerHTML = `<option value="">Todas as campanhas</option>`+campanhas().map(c=>`<option ${c===cur?'selected':''}>${esc(c)}</option>`).join('');
+  const camp=sel.value, q=$('pSearch').value.trim().toLowerCase(), inat=$('pInat').checked;
+  const ms = DB.materiais.filter(m=>m.ativo!==false && (!camp||m.campanha===camp)).sort((a,b)=>a.campanha.localeCompare(b.campanha,'pt')||a.nome.localeCompare(b.nome,'pt'));
+  const ps = DB.pessoal.filter(p=>(inat||p.ativo!==false) && (!q||(p.nome+' '+(p.servico||'')).toLowerCase().includes(q))).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+  const idx = {}; DB.movimentos.forEach(x=>{ if(x.tipo==='pessoal'){ (idx[x.pessoaId+'|'+x.materialId] ||= []).push(x); } });
+  const tot = {};
+  let h = `<table class="mx"><thead><tr><th class="nm">Pessoa</th><th>Tam.</th>${ms.map(m=>`<th class="vert" title="${esc(m.nome+' — '+m.campanha)}"><div>${esc(m.nome)}<small>${esc(m.campanha)}</small></div></th>`).join('')}</tr></thead><tbody>`;
+  ps.forEach(p=>{
+    h += `<tr><td class="nm"><a href="#" data-p="${p.id}" style="color:inherit;text-decoration:none"><b>${esc(p.nome)}</b>${p.servico?` <span class="small muted">${esc(p.servico)}</span>`:''}${p.ativo===false?' <span class="small muted">(inativo)</span>':''}</a></td><td>${esc(p.tamanho||'—')}</td>`;
+    ms.forEach(m=>{ const xs=idx[p.id+'|'+m.id]||[];
+      if(xs.length) tot[m.id]=(tot[m.id]||0)+xs.length;
+      const txt = xs.map(x=> m.variantes.length>1? Object.keys(x.qtd)[0] : '✓').join('+');
+      h += `<td class="c ${xs.length?'has':''}" data-p="${p.id}" data-m="${m.id}">${esc(txt)}</td>`; });
+    h += '</tr>';
+  });
+  h += `</tbody><tfoot><tr><td class="nm">Total entregue</td><td></td>${ms.map(m=>`<td>${tot[m.id]||0}</td>`).join('')}</tr></tfoot></table>`;
+  $('matriz').innerHTML = ps.length&&ms.length ? h : '<div class="empty">Sem resultados.</div>';
+}
+['pSearch','pCamp','pInat'].forEach(i=>$(i).addEventListener(i==='pSearch'?'input':'change', rPessoal));
+$('matriz').addEventListener('click', e=>{
+  const a=e.target.closest('a[data-p]'); if(a){ e.preventDefault(); editPessoa(a.dataset.p); return; }
+  const c=e.target.closest('td.c'); if(c) celula(c.dataset.p, c.dataset.m);
+});
+function celula(pid, mid){
+  const p=pes(pid), m=mat(mid), s=stock(m);
+  const xs=DB.movimentos.filter(x=>x.tipo==='pessoal'&&x.pessoaId===pid&&x.materialId===mid);
+  const pref = m.variantes.includes(p.tamanho)? p.tamanho : m.variantes[0];
+  modal(`<h2>${esc(p.nome)} · ${esc(m.nome)}</h2><div class="small muted" style="margin-bottom:12px">${esc(m.campanha)}</div>
+    ${xs.length? `<div style="margin-bottom:14px"><b>Já entregue:</b><table style="margin-top:6px"><tbody>${xs.map(x=>`<tr><td>${m.variantes.length>1?'<b>'+esc(Object.keys(x.qtd)[0])+'</b> · ':''}${x.data?fmtD(x.data):'<span class="muted">sem data</span>'}${x.entreguePor?' · por '+esc(x.entreguePor):''}${x.obs?' <span class="small muted">'+esc(x.obs)+'</span>':''}</td><td class="n"><button class="btn danger sm" onclick="anularEntrega('${x.id}','${pid}','${mid}')">Anular</button></td></tr>`).join('')}</tbody></table></div>`:''}
+    <h3 style="font-size:15px;margin:0 0 8px">${xs.length?'Registar outra entrega':'Registar entrega'}</h3>
+    <div class="grid">
+      ${m.variantes.length>1?`<div><label>Variante${p.tamanho?' (tamanho habitual: '+esc(p.tamanho)+')':''}</label><select id="c_v">${m.variantes.map(v=>`<option ${v===pref?'selected':''} value="${esc(v)}">${esc(v)} — disp. ${s[v]?.disp??0}</option>`).join('')}</select></div>`:`<div><label>Disponível</label><input disabled value="${s[m.variantes[0]]?.disp??0}"></div>`}
+      <div><label>Data</label><input type="date" id="c_d" value="${hoje()}"></div>
+      <div><label>Entregue por</label><input id="c_e" list="dl_pes">${dlPessoas()}</div>
+    </div>
+    <div class="foot"><button class="btn" onclick="regEntrega('${pid}','${mid}')">Registar entrega</button></div>`);
+}
+function regEntrega(pid, mid){
+  const m=mat(mid); const v = m.variantes.length>1 ? $('c_v').value : m.variantes[0];
+  const d=stock(m)[v]?.disp??0;
+  if(d<=0 && !confirm(`Não há stock disponível de ${m.nome}${m.variantes.length>1?' ('+v+')':''}. Registar mesmo assim?`)) return;
+  DB.movimentos.push({id:uid('m'),tipo:'pessoal',data:$('c_d').value,materialId:mid,qtd:{[v]:1},pessoaId:pid,entreguePor:$('c_e').value.trim(),destino:'',obs:'',...(USER?{criadoPor:USER.email,criadoEm:new Date().toISOString()}:{})});
+  save(); closeM(); render();
+}
+function anularEntrega(xid,pid,mid){ if(!confirm('Anular este registo de entrega? A unidade volta ao stock.')) return;
+  DB.movimentos=DB.movimentos.filter(x=>x.id!==xid); save(); render(); celula(pid,mid); }
+
+function editPessoa(id){
+  const p = id? pes(id) : {nome:'',servico:'',tamanho:'',ativo:true};
+  const xs = id? DB.movimentos.filter(x=>x.tipo==='pessoal'&&x.pessoaId===id) : [];
+  modal(`<h2>${id?'Ficha de pessoa':'Nova pessoa'}</h2>
+    <div class="grid">
+      <div><label>Nome *</label><input id="p_n" value="${esc(p.nome)}"></div>
+      <div><label>Serviço / Direção</label><input id="p_s" list="dl_sv" value="${esc(p.servico)}"><datalist id="dl_sv">${[...new Set(DB.pessoal.map(x=>x.servico).filter(Boolean))].map(s=>`<option value="${esc(s)}">`).join('')}</datalist></div>
+      <div><label>Tamanho habitual</label><select id="p_t"><option value="">—</option>${TAMANHOS.map(t=>`<option ${t===p.tamanho?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div><label>Estado</label><select id="p_a"><option value="1">Ativo</option><option value="0" ${p.ativo===false?'selected':''}>Inativo</option></select></div>
+    </div>
+    ${id?`<h3 style="font-size:15px;margin:18px 0 6px">Material recebido (${xs.length})</h3>
+      ${xs.length?`<table><tbody>${xs.map(x=>{const m=mat(x.materialId);return `<tr><td>${esc(m?.nome)} <span class="small muted">${esc(m?.campanha)}</span></td><td>${m&&m.variantes.length>1?esc(Object.keys(x.qtd)[0]):''}</td><td class="small muted">${x.data?fmtD(x.data):'sem data'}</td></tr>`}).join('')}</tbody></table>`:'<div class="muted small">Nada registado.</div>'}`:''}
+    <div class="foot">${id?`<button class="btn danger" onclick="delPessoa('${id}')">Apagar</button><div class="sp"></div>`:''}<button class="btn sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="savePessoa('${id||''}')">Guardar</button></div>`);
+}
+function savePessoa(id){
+  const nome=$('p_n').value.trim(); if(!nome) return alert('Indique o nome.');
+  const o={nome,servico:$('p_s').value.trim(),tamanho:$('p_t').value,ativo:$('p_a').value==='1'};
+  if(id) Object.assign(pes(id),o); else DB.pessoal.push({id:uid('p'),...o});
+  save(); closeM(); render();
+}
+function delPessoa(id){
+  const n=DB.movimentos.filter(x=>x.pessoaId===id).length;
+  if(n){ alert(`Esta pessoa tem ${n} entregas registadas. Para manter o histórico, marque-a como “Inativo” em vez de apagar.`); return; }
+  if(!confirm('Apagar esta pessoa?')) return;
+  DB.pessoal=DB.pessoal.filter(p=>p.id!==id); save(); closeM(); render();
+}
+
+/* ---------- MOVIMENTOS ---------- */
+function cmpMov(a,b){ return (b.data||'').localeCompare(a.data||'') || (b.id>a.id?1:-1); }
+function movTable(list, showMat=true){
+  if(!list.length) return '<div class="empty">Sem movimentos.</div>';
+  return `<div class="tw"><table><thead><tr><th>Data</th><th>Tipo</th>${showMat?'<th>Material</th>':''}<th>Quantidade</th><th>Destino / pessoa</th><th>Por</th><th></th></tr></thead><tbody>
+  ${list.map(x=>{const m=mat(x.materialId); const p=x.pessoaId?pes(x.pessoaId):null;
+    return `<tr class="click" data-x="${x.id}"><td style="white-space:nowrap">${x.data?fmtD(x.data):'<span class="muted">s/ data</span>'}</td><td><span class="tag t-${x.tipo}">${TIPOS[x.tipo]}</span></td>
+    ${showMat?`<td><b>${esc(m?.nome||'?')}</b><div class="small muted">${esc(m?.campanha||'')}</div></td>`:''}
+    <td style="white-space:nowrap">${esc(qtdTxt(m,x.qtd))}</td><td>${p?esc(p.nome):esc(x.destino)}${x.obs?`<div class="small muted">${esc(x.obs)}</div>`:''}</td><td>${esc(x.entreguePor)}</td>
+    <td class="n" style="white-space:nowrap">${x.tipo==='oferta'?`<button class="btn sec sm" data-g="${x.id}" title="Imprimir guia">Guia</button>`:''}</td></tr>`}).join('')}
+  </tbody></table></div>`;
+}
+function movFiltrados(){
+  const q=$('mSearch').value.trim().toLowerCase(), t=$('mTipo').value, c=$('mCamp').value, mi=$('mMat').value, a=$('mAno').value;
+  return DB.movimentos.filter(x=>{
+    const m=mat(x.materialId); if(t&&x.tipo!==t) return false; if(c&&m?.campanha!==c) return false; if(mi&&x.materialId!==mi) return false;
+    if(a){ if(a==='s/d'){ if(x.data) return false; } else if(!(x.data||'').startsWith(a)) return false; }
+    if(q){ const p=x.pessoaId?pes(x.pessoaId)?.nome:''; if(!((x.destino||'')+' '+(x.obs||'')+' '+(x.entreguePor||'')+' '+(p||'')+' '+(m?.nome||'')).toLowerCase().includes(q)) return false; }
+    return true; }).sort(cmpMov);
+}
+function rMov(){
+  const keep=(id,html)=>{ const s=$(id), v=s.value; s.innerHTML=html; if([...s.options].some(o=>o.value===v)) s.value=v; };
+  keep('mCamp', '<option value="">Todas</option>'+campanhas().map(c=>`<option>${esc(c)}</option>`).join(''));
+  const c=$('mCamp').value;
+  keep('mMat', '<option value="">Todos</option>'+DB.materiais.filter(m=>!c||m.campanha===c).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(m=>`<option value="${m.id}">${esc(m.nome)}${c?'':' — '+esc(m.campanha)}</option>`).join(''));
+  const anos=[...new Set(DB.movimentos.map(x=>(x.data||'').slice(0,4)).filter(Boolean))].sort().reverse();
+  keep('mAno', '<option value="">Todos</option>'+anos.map(a=>`<option>${a}</option>`).join('')+'<option value="s/d">Sem data</option>');
+  const L=movFiltrados();
+  $('mCount').textContent = L.length+' movimentos';
+  $('movList').innerHTML = movTable(L.slice(0,500)) + (L.length>500?'<p class="small muted">A mostrar os 500 mais recentes. Use os filtros para refinar.</p>':'');
+}
+['mSearch','mTipo','mCamp','mMat','mAno'].forEach(i=>$(i).addEventListener(i==='mSearch'?'input':'change', rMov));
+document.addEventListener('click', e=>{
+  const g=e.target.closest('[data-g]'); if(g){ e.stopPropagation(); printGuia(g.dataset.g); return; }
+  const tr=e.target.closest('tr[data-x]'); if(tr) editMov(tr.dataset.x);
+});
+
+function novoMov(pre={}){ editMov(null, pre); }
+function editMov(id, pre={}){
+  const x = id? DB.movimentos.find(v=>v.id===id) : {tipo:pre.tipo||'oferta', data:hoje(), materialId:pre.materialId||'', qtd:{}, pessoaId:'', entreguePor:'', destino:'', obs:''};
+  const ms = DB.materiais.filter(m=>m.ativo!==false || m.id===x.materialId).sort((a,b)=>a.campanha.localeCompare(b.campanha,'pt')||a.nome.localeCompare(b.nome,'pt'));
+  const grupos = campanhas().map(c=>{ const g=ms.filter(m=>m.campanha===c); return g.length?`<optgroup label="${esc(c)}">${g.map(m=>`<option value="${m.id}" ${m.id===x.materialId?'selected':''}>${esc(m.nome)}</option>`).join('')}</optgroup>`:''; }).join('');
+  modal(`<h2>${id?'Editar':'Novo'} movimento</h2>
+    <div class="grid">
+      <div><label>Tipo *</label><select id="x_t">${Object.entries(TIPOS).map(([k,v])=>`<option value="${k}" ${k===x.tipo?'selected':''}>${v}</option>`).join('')}</select></div>
+      <div><label>Data</label><input type="date" id="x_d" value="${esc(x.data)}"></div>
+      <div style="grid-column:span 2;min-width:0"><label>Material *</label><select id="x_m"><option value="">— escolher —</option>${grupos}</select></div>
+    </div>
+    <div id="x_pw" style="margin-top:12px"><label>Pessoa *</label><select id="x_p"><option value="">— escolher —</option>${DB.pessoal.filter(p=>p.ativo!==false||p.id===x.pessoaId).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(p=>`<option value="${p.id}" ${p.id===x.pessoaId?'selected':''}>${esc(p.nome)}${p.tamanho?' ('+p.tamanho+')':''}</option>`).join('')}</select></div>
+    <div style="margin-top:12px"><label id="x_ql">Quantidades</label><div class="qgrid" id="x_q"></div><div id="x_warn"></div></div>
+    <div class="grid" style="margin-top:12px">
+      <div id="x_dw"><label id="x_dl">Destino / motivo</label><input id="x_dest" value="${esc(x.destino)}" placeholder="ex.: Atividade EMD 2025, SPEA, oferta…"></div>
+      <div><label>Entregue / registado por</label><input id="x_e" list="dl_pes" value="${esc(x.entreguePor)}">${dlPessoas()}</div>
+    </div>
+    <div style="margin-top:12px"><label>Observações</label><textarea id="x_o">${esc(x.obs)}</textarea></div>
+    ${x.criadoPor||x.alteradoPor?`<div class="small muted" style="margin-top:8px">${x.criadoPor?'Registado por '+esc(x.criadoPor)+' em '+new Date(x.criadoEm).toLocaleString('pt-PT'):''}${x.alteradoPor?'<br>Última alteração: '+esc(x.alteradoPor)+' em '+new Date(x.alteradoEm).toLocaleString('pt-PT'):''}</div>`:''}
+    <div class="foot">${id?`<button class="btn danger" onclick="delMov('${id}')">Apagar</button><div class="sp"></div>`:''}${id&&x.tipo==='oferta'?`<button class="btn sec" onclick="printGuia('${id}')">Imprimir guia</button>`:''}<button class="btn sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="saveMov('${id||''}')">Guardar</button></div>`);
+  const upd=()=>{
+    const t=$('x_t').value, m=mat($('x_m').value);
+    $('x_pw').classList.toggle('hide', t!=='pessoal');
+    $('x_dw').classList.toggle('hide', t==='pessoal');
+    $('x_dl').textContent = t==='entrada'?'Origem / fornecedor': t==='acerto'?'Motivo do acerto':'Destino / motivo';
+    $('x_ql').textContent = t==='acerto'?'Quantidades (positivo soma, negativo subtrai ao stock)': t==='pessoal'?'Variante (1 unidade)':'Quantidades';
+    if(!m){ $('x_q').innerHTML='<div class="muted small">Escolha o material.</div>'; $('x_warn').innerHTML=''; return; }
+    const s=stock(m);
+    // ao editar, somar de volta o próprio movimento
+    const own = id && x.materialId===m.id ? x : null;
+    const disp = v => (s[v]?.disp??0) + (own? (({entrada:-1,acerto:-1,pessoal:1,oferta:1})[own.tipo])*(+own.qtd[v]||0):0);
+    const prev = {}; $('x_q').querySelectorAll('input').forEach(i=>prev[i.dataset.v]=i.value);
+    if(t==='pessoal'){
+      const p=pes($('x_p').value); const cur = Object.keys(x.qtd)[0] || (p&&m.variantes.includes(p.tamanho)?p.tamanho:m.variantes[0]);
+      $('x_q').innerHTML = `<select id="x_pv" style="grid-column:1/-1">${m.variantes.map(v=>`<option value="${esc(v)}" ${v===cur?'selected':''}>${esc(v)} — disp. ${disp(v)}</option>`).join('')}</select>`;
+    } else {
+      $('x_q').innerHTML = m.variantes.map(v=>`<div class="q"><label><span>${esc(v)}</span><span class="${disp(v)<0?'':'muted'}">disp. ${disp(v)}</span></label><input type="number" ${t==='acerto'?'':'min="0"'} inputmode="numeric" data-v="${esc(v)}" value="${prev[v]??(x.materialId===m.id&&x.qtd[v]?x.qtd[v]:'')}"></div>`).join('');
+    }
+    const chk=()=>{
+      if(t!=='oferta'){ $('x_warn').innerHTML=''; return; }
+      const over=[...$('x_q').querySelectorAll('input')].filter(i=>(+i.value||0)>disp(i.dataset.v)).map(i=>i.dataset.v);
+      $('x_warn').innerHTML = over.length?`<div class="note">Quantidade superior ao disponível em: ${esc(over.join(', '))}.</div>`:'';
+    };
+    $('x_q').oninput=chk; chk();
+  };
+  $('x_t').onchange=upd; $('x_m').onchange=upd; $('x_p').onchange=upd; upd();
+}
+function saveMov(id){
+  const t=$('x_t').value, mid=$('x_m').value; if(!mid) return alert('Escolha o material.');
+  let qtd={}, pessoaId='';
+  if(t==='pessoal'){ pessoaId=$('x_p').value; if(!pessoaId) return alert('Escolha a pessoa.'); qtd={[$('x_pv').value]:1}; }
+  else { $('x_q').querySelectorAll('input').forEach(i=>{ const n=parseInt(i.value,10); if(n) qtd[i.dataset.v]=n; });
+    if(!Object.keys(qtd).length) return alert('Indique pelo menos uma quantidade.');
+    if(t!=='acerto' && Object.values(qtd).some(n=>n<0)) return alert('As quantidades não podem ser negativas (use “Acerto” para corrigir stock).'); }
+  const o={tipo:t,data:$('x_d').value,materialId:mid,qtd,pessoaId,entreguePor:$('x_e').value.trim(),destino:t==='pessoal'?'':$('x_dest').value.trim(),obs:$('x_o').value.trim()};
+  if(USER){ if(id) Object.assign(o,{alteradoPor:USER.email,alteradoEm:new Date().toISOString()}); else Object.assign(o,{criadoPor:USER.email,criadoEm:new Date().toISOString()}); }
+  if(id) Object.assign(DB.movimentos.find(v=>v.id===id),o); else DB.movimentos.push({id:uid('m'),...o});
+  save(); closeM(); render();
+}
+function delMov(id){ if(!confirm('Apagar este movimento?')) return; DB.movimentos=DB.movimentos.filter(x=>x.id!==id); save(); closeM(); render(); }
+
+/* ---------- impressão ---------- */
+function printGuia(id){
+  const x=DB.movimentos.find(v=>v.id===id), m=mat(x.materialId);
+  const n = DB.movimentos.filter(v=>v.tipo==='oferta').sort((a,b)=>(a.data||'').localeCompare(b.data||'')||(a.id>b.id?1:-1)).findIndex(v=>v.id===id)+1;
+  $('print').innerHTML = `<h1>Guia de saída de material de sensibilização</h1>
+    <div>N.º ${n} · Data: ${fmtD(x.data)}</div>
+    <h2>Material</h2>
+    <table><thead><tr><th>Campanha</th><th>Material</th><th>Variante</th><th>Quantidade</th></tr></thead><tbody>
+      ${Object.entries(x.qtd).map(([v,q])=>`<tr><td>${esc(m.campanha)}</td><td>${esc(m.nome)}</td><td>${esc(v)}</td><td>${q}</td></tr>`).join('')}
+      <tr><td colspan="3" style="text-align:right"><b>Total</b></td><td><b>${sumQ(x.qtd)}</b></td></tr></tbody></table>
+    ${m.foto?`<img src="${m.foto}" style="max-height:120px;margin-top:10px;border:1px solid #999">`:''}
+    <h2>Destino / motivo</h2><div>${esc(x.destino)||'—'}</div>
+    ${x.obs?`<h2>Observações</h2><div>${esc(x.obs)}</div>`:''}
+    <div class="sig"><div>Entregue por${x.entreguePor?': '+esc(x.entreguePor):''}</div><div>Recebido por</div></div>`;
+  window.print();
+}
+function printStock(){
+  const ms=DB.materiais.filter(m=>m.ativo!==false && (!campSel||m.campanha===campSel));
+  $('print').innerHTML = `<h1>Stock de material de sensibilização${campSel?' — '+esc(campSel):''}</h1><div>Emitido em ${fmtD(hoje())}</div>`+
+    campanhas().filter(c=>!campSel||c===campSel).map(c=>{ const g=ms.filter(m=>m.campanha===c); if(!g.length) return '';
+      return `<div class="pb"><h2>${esc(c)}</h2><table><thead><tr><th>Material</th><th>Variante</th><th>Entradas</th><th>Pessoal</th><th>Ofertas</th><th>Acertos</th><th>Disponível</th></tr></thead><tbody>${
+        g.map(m=>{const s=stock(m); return Object.keys(s).map((v,i)=>`<tr><td>${i?'':esc(m.nome)}</td><td>${esc(v)}</td><td>${s[v].entrada}</td><td>${s[v].pessoal}</td><td>${s[v].oferta}</td><td>${s[v].acerto}</td><td><b>${s[v].disp}</b></td></tr>`).join('')}).join('')}</tbody></table></div>`; }).join('');
+  window.print();
+}
+
+/* ---------- exportação ---------- */
+function dl(name, text, type){ const b=new Blob([text],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); }
+function csv(rows){ return '﻿'+rows.map(r=>r.map(v=>{ v=String(v??''); return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(';')).join('\r\n'); }
+function exportJSON(){ dl('material_sensibilizacao_'+hoje()+'.json', JSON.stringify(DB,null,1), 'application/json'); }
+function exportMovCSV(all){
+  const L = all? DB.movimentos.slice().sort(cmpMov) : movFiltrados();
+  const rows=[['Data','Tipo','Campanha','Material','Variante','Quantidade','Pessoa','Destino/motivo','Entregue por','Observações']];
+  L.forEach(x=>{ const m=mat(x.materialId), p=x.pessoaId?pes(x.pessoaId):null;
+    Object.entries(x.qtd).forEach(([v,q])=>rows.push([fmtD(x.data).replace('—',''),TIPOS[x.tipo],m?.campanha,m?.nome,v,q,p?.nome||'',x.destino,x.entreguePor,x.obs])); });
+  dl('movimentos_'+hoje()+'.csv', csv(rows), 'text/csv');
+}
+function exportStockCSV(){
+  const rows=[['Campanha','Material','Variante','Entradas','Entregue pessoal','Ofertas','Acertos','Disponível']];
+  DB.materiais.slice().sort((a,b)=>a.campanha.localeCompare(b.campanha,'pt')||a.nome.localeCompare(b.nome,'pt')).forEach(m=>{ const s=stock(m);
+    for(const v in s) rows.push([m.campanha,m.nome,v,s[v].entrada,s[v].pessoal,s[v].oferta,s[v].acerto,s[v].disp]); });
+  dl('stock_'+hoje()+'.csv', csv(rows), 'text/csv');
+}
+function exportMatrizCSV(){
+  const ms=DB.materiais.filter(m=>m.ativo!==false).sort((a,b)=>a.campanha.localeCompare(b.campanha,'pt')||a.nome.localeCompare(b.nome,'pt'));
+  const rows=[['Pessoa','Serviço','Tamanho',...ms.map(m=>m.nome+' ('+m.campanha+')')]];
+  DB.pessoal.filter(p=>p.ativo!==false).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).forEach(p=>{
+    rows.push([p.nome,p.servico,p.tamanho,...ms.map(m=>DB.movimentos.filter(x=>x.tipo==='pessoal'&&x.pessoaId===p.id&&x.materialId===m.id).map(x=>m.variantes.length>1?Object.keys(x.qtd)[0]:'X').join('+'))]); });
+  dl('matriz_pessoal_'+hoje()+'.csv', csv(rows), 'text/csv');
+}
+$('fImp').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return; const r=new FileReader();
+  r.onload=()=>{ try{ const d=JSON.parse(r.result);
+      if(!Array.isArray(d.materiais)||!Array.isArray(d.movimentos)||!Array.isArray(d.pessoal)) throw new Error('Ficheiro sem a estrutura esperada.');
+      if(!confirm(`Importar ${d.materiais.length} materiais, ${d.pessoal.length} pessoas e ${d.movimentos.length} movimentos? Os dados atuais serão substituídos${fsdb?' em todos os dispositivos ligados':''}.`)) return;
+      DB=d; save(); render(); } catch(err){ alert('Não foi possível importar: '+err.message); } e.target.value=''; };
+  r.readAsText(f);
+});
+function repor(){ if(!confirm((fsdb?'ATENÇÃO: está ligado ao Firebase — isto apaga os registos em TODOS os dispositivos. ':'')+'Apagar todos os registos e repor os dados do Excel original?')) return;
+  DB=JSON.parse(JSON.stringify(SEED)); save(); render(); }
+function rDados(){ $('lastSave').textContent = DB.atualizado? 'Última gravação: '+new Date(DB.atualizado).toLocaleString('pt-PT') : ''; }
+
+/* ---------- modal ---------- */
+function modal(h){ $('md').innerHTML='<button class="xbtn" title="Fechar" aria-label="Fechar" onclick="closeM()">×</button>'+h; $('ov').classList.add('on'); }
+function closeM(){ $('ov').classList.remove('on'); }
+$('ov').addEventListener('mousedown', e=>{ if(e.target.id==='ov') closeM(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeM(); });
+
+/* ---------- Firebase ---------- */
+const FB_DEFAULT = /*FBCONFIG*/null;   // configuração embutida (projeto equip-campo)
+const FB_KEY = 'matsens_fb', COLS = ['materiais','pessoal','movimentos'], FB_V = '10.12.2';
+let fsdb = null, fbRoot = null, synced = {materiais:{},pessoal:{},movimentos:{}};
+function fbConfig(){ try{ const c=localStorage.getItem(FB_KEY); if(c==='off') return null; if(c) return JSON.parse(c); }catch(e){} return FB_DEFAULT; }
+function parseCfg(t){
+  t=t.trim(); try{ return JSON.parse(t); }catch(e){}
+  const o={}; t.replace(/(\w+)\s*:\s*["'`]([^"'`]+)["'`]/g,(m,k,v)=>{o[k]=v;}); return o;
+}
+function setSync(st, msg){
+  const e=$('sync'); e.className='sync '+({ok:'ok',wait:'wait',erro:'err'}[st]||'');
+  e.querySelector('span').textContent = ({local:'Só neste dispositivo', wait:'A sincronizar…', ok:'Sincronizado', erro:'Erro de sincronização', offline:'Sem rede (guarda localmente)'}[st]||st);
+  e.title = msg||''; if(st==='erro' && msg) console.warn('Firebase:', msg);
+  if(VIEW==='dados') rDados();
+}
+function loadScript(src){ return new Promise((ok,ko)=>{ const s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=()=>ko(new Error('não foi possível carregar o Firebase (sem rede?)')); document.head.appendChild(s); }); }
+const clean = o => JSON.parse(JSON.stringify(o));
+let unsubs=[], USER=null;
+async function fbStart(){
+  const cfg=fbConfig(); if(!cfg || !cfg.projectId){ setSync('local'); return; }
+  setSync('wait'); $('gate').classList.remove('hide');
+  try{
+    if(!window.firebase){
+      await loadScript(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-app-compat.js`);
+      await loadScript(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-firestore-compat.js`);
+      await loadScript(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-auth-compat.js`);
+    }
+    if(!firebase.apps.length) firebase.initializeApp(cfg);
+    const db = firebase.firestore();
+    try{ await db.enablePersistence({synchronizeTabs:true}); }catch(e){}
+    firebase.auth().onAuthStateChanged(u=>{
+      if(u && !u.isAnonymous){ USER=u; mostrarApp(); ligarDados(db); }
+      else { USER=null; pararDados(); mostrarLogin(); if(u&&u.isAnonymous) firebase.auth().signOut(); }
+    });
+  }catch(e){ fsdb=null; setSync('erro', e.message);
+    $('gWait').innerHTML = 'Não foi possível contactar o servidor ('+esc(e.message)+'). Verifique a ligação à internet e volte a abrir a app.'; }
+}
+function mostrarLogin(){ $('gate').classList.remove('hide'); $('gWait').classList.add('hide'); $('gForm').classList.remove('hide'); $('userBox').classList.add('hide'); setTimeout(()=>$('gEmail').focus(),50); }
+function mostrarApp(){ $('gate').classList.add('hide'); $('userEmail').textContent=USER.email; $('userBox').classList.remove('hide'); }
+async function entrar(e){
+  e.preventDefault(); const er=$('gErr'); er.classList.add('hide'); $('gBtn').disabled=true; $('gBtn').textContent='A entrar…';
+  try{ await firebase.auth().signInWithEmailAndPassword($('gEmail').value.trim(), $('gPass').value); $('gPass').value=''; }
+  catch(x){ er.textContent = ({'auth/invalid-credential':'Email ou palavra-passe incorretos.','auth/wrong-password':'Email ou palavra-passe incorretos.','auth/user-not-found':'Email ou palavra-passe incorretos.','auth/invalid-email':'Email inválido.','auth/too-many-requests':'Demasiadas tentativas. Aguarde alguns minutos.','auth/network-request-failed':'Sem ligação à internet.','auth/user-disabled':'Esta conta foi desativada.','auth/operation-not-allowed':'O login por email/palavra-passe não está ativo no projeto Firebase.'})[x.code] || ('Erro: '+(x.message||x.code));
+    er.classList.remove('hide'); }
+  $('gBtn').disabled=false; $('gBtn').textContent='Entrar';
+}
+async function recuperar(){
+  const em=$('gEmail').value.trim(); if(!em) return alert('Escreva primeiro o seu email no campo acima.');
+  try{ await firebase.auth().sendPasswordResetEmail(em); alert('Se existir uma conta com esse email, receberá uma mensagem para definir nova palavra-passe.'); }
+  catch(x){ alert('Não foi possível enviar: '+(x.message||x.code)); }
+}
+async function sair(){
+  if(!window.firebase || !USER) return;
+  if(!confirm('Terminar sessão neste dispositivo? Os dados guardados localmente neste dispositivo são apagados (continuam na nuvem).')) return;
+  pararDados(); try{ localStorage.removeItem(KEY); }catch(e){}
+  DB={materiais:[],pessoal:[],movimentos:[]}; render(); closeM(); await firebase.auth().signOut();
+}
+function pararDados(){ unsubs.forEach(f=>f()); unsubs=[]; fsdb=null; }
+async function ligarDados(db){
+  if(fsdb) return;
+  try{
+    const root = db.collection('matsens').doc('dados');
+    const snaps = await Promise.all(COLS.map(c=>root.collection(c).get()));
+    fsdb = db; fbRoot = root;
+    if(snaps.every(x=>x.empty)){
+      if(!DB.materiais.length) DB=JSON.parse(JSON.stringify(SEED));
+      synced={materiais:{},pessoal:{},movimentos:{}}; await pushDiff(true); toast('Dados enviados para o Firebase');
+    } else synced={materiais:{},pessoal:{},movimentos:{}};
+    COLS.forEach(c=> unsubs.push(root.collection(c).onSnapshot(snap=>{
+      const arr = snap.docs.map(d=>d.data());
+      DB[c] = arr; synced[c] = Object.fromEntries(arr.map(o=>[o.id, JSON.stringify(o)]));
+      try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){}
+      setSync(snap.metadata.hasPendingWrites ? 'wait' : (snap.metadata.fromCache && !navigator.onLine ? 'offline' : 'ok'));
+      render();
+    }, err=>setSync('erro', err.code==='permission-denied'?'Sem permissão — verifique as regras do Firestore e a conta.':err.message))));
+  }catch(e){ fsdb=null; setSync('erro', e.code==='permission-denied'?'Sem permissão — verifique as regras do Firestore e a conta.':e.message); }
+}
+async function pushDiff(wait){
+  if(!fsdb) return;
+  const ops=[];
+  COLS.forEach(c=>{
+    const cur={}; (DB[c]||[]).forEach(o=>cur[o.id]=o);
+    for(const id in cur){ const j=JSON.stringify(cur[id]); if(synced[c][id]!==j){ ops.push(b=>b.set(fbRoot.collection(c).doc(id), clean(cur[id]))); synced[c][id]=j; } }
+    for(const id in synced[c]) if(!cur[id]){ ops.push(b=>b.delete(fbRoot.collection(c).doc(id))); delete synced[c][id]; }
+  });
+  if(!ops.length) return;
+  setSync(navigator.onLine?'wait':'offline');
+  const commits=[];
+  for(let i=0;i<ops.length;i+=400){ const b=fsdb.batch(); ops.slice(i,i+400).forEach(f=>f(b)); commits.push(b.commit()); }
+  const p = Promise.all(commits).then(()=>setSync('ok')).catch(e=>setSync('erro', e.message));
+  if(wait) await p;
+}
+function fbLigar(){
+  const c=parseCfg($('fbCfg').value);
+  if(!c.apiKey||!c.projectId) return alert('Configuração incompleta: são precisos pelo menos apiKey e projectId.');
+  if(c.projectId!=='equip-campo' && !confirm('O projectId é "'+c.projectId+'" e não "equip-campo". Ligar mesmo assim?')) return;
+  if(!confirm('Depois de ligar, será pedido o email e a palavra-passe. Se a coleção na nuvem estiver vazia, os dados deste dispositivo são enviados; se já tiver dados, estes substituem os deste dispositivo. Continuar?')) return;
+  localStorage.setItem(FB_KEY, JSON.stringify(c)); location.reload();
+}
+function fbDesligar(){ if(!confirm('Desligar este dispositivo da sincronização? Os dados ficam guardados localmente.')) return;
+  localStorage.setItem(FB_KEY,'off'); location.reload(); }
+const _rDados = rDados;
+rDados = function(){ _rDados();
+  const c=fbConfig();
+  $('fbInfo').innerHTML = c&&c.projectId ? `Ligado ao projeto <b>${esc(c.projectId)}</b> · estado: <b>${esc($('sync').textContent)}</b>${$('sync').title?' — '+esc($('sync').title):''}` : '<span class="muted">Este dispositivo não está ligado.</span>';
+  $('fbForm').classList.toggle('hide', !!(c&&c.projectId)); $('fbOff').classList.toggle('hide', !(c&&c.projectId));
+};
+window.addEventListener('online', ()=>fsdb&&setSync('ok')); window.addEventListener('offline', ()=>fsdb&&setSync('offline'));
+
+load(); if(fbConfig()&&fbConfig().projectId){ $('gate').classList.remove('hide'); } render(); fbStart();
+</script>
+</body>
+</html>
